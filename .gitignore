@@ -1,0 +1,4 @@
+# Gitignore for linx4py #
+#########################
+
+*.pyc
