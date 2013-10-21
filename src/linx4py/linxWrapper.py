@@ -1,10 +1,10 @@
 '''
 Created on 17 okt 2013
 
-@author: bjorn
+@author: Bjorn Arnelid
 '''
 
-from ctypes import CDLL, POINTER, Structure, Union, c_uint, c_int, c_char_p, c_void_p
+from ctypes import CDLL, POINTER, Structure, c_uint, c_int, c_char_p, c_void_p
 
 class LinxWrapper(object):
     '''
@@ -12,12 +12,14 @@ class LinxWrapper(object):
     Linxwrapper mirrors linx.h directly making the function calls as similar as possible
     '''
     liblinx = None
+    signalClass = None
 
     def __init__(self):
         '''
         Constructor
         '''
         self.liblinx = CDLL("liblinx.so")
+        self.signalClass = BaseSignal
         
     def linx_open(self, name, options, arg):
         '''
@@ -37,7 +39,7 @@ class LinxWrapper(object):
         int linx_hunt(LINX * linx, const char *name, union LINX_SIGNAL **hunt_sig);
         '''
         linx_hunt = self.liblinx.linx_hunt
-        linx_hunt.argtypes = [POINTER(LINX), c_char_p, POINTER(POINTER(LINX_SIGNAL))]
+        linx_hunt.argtypes = [POINTER(LINX), c_char_p, POINTER(POINTER(self.signalClass))]
         return linx_hunt(linx, name, hunt_sig)
     
     def linx_receive_w_tmo(self,linx, sig, tmo, sig_sel):
@@ -48,7 +50,7 @@ class LinxWrapper(object):
                                LINX_OSTIME tmo, const LINX_SIGSELECT * sig_sel);
         '''
         linx_receive_w_tmo = self.liblinx.linx_receive_w_tmo
-        linx_receive_w_tmo.argtypes = [POINTER(LINX), POINTER(POINTER(LINX_SIGNAL)), 
+        linx_receive_w_tmo.argtypes = [POINTER(LINX), POINTER(POINTER(self.signalClass)), 
                                        c_uint, POINTER(c_uint)]
         return linx_receive_w_tmo(linx, sig, tmo, sig_sel)
     
@@ -59,7 +61,7 @@ class LinxWrapper(object):
         LINX_SPID linx_sender(LINX * linx, union LINX_SIGNAL **sig);
         '''
         linx_sender = self.liblinx.linx_sender
-        linx_sender.argtypes = [POINTER(LINX), POINTER(POINTER(LINX_SIGNAL))]
+        linx_sender.argtypes = [POINTER(LINX), POINTER(POINTER(self.signalClass))]
         return linx_sender(linx, sig)
         
     def linx_attach(self, linx, sig, spid):
@@ -69,17 +71,46 @@ class LinxWrapper(object):
         LINX_OSATTREF linx_attach(LINX * linx, union LINX_SIGNAL **sig, LINX_SPID spid);
         '''
         linx_attach = self.liblinx.linx_attach
-        linx_attach.argtypes = [POINTER(LINX), POINTER(POINTER(LINX_SIGNAL)), c_uint]
-        state = linx_attach(linx, sig, spid)
-        return state
+        linx_attach.argtypes = [POINTER(LINX), POINTER(POINTER(self.signalClass)), c_uint]
+        return linx_attach(linx, sig, spid)
     
-    def linx_send(self):
+    def linx_alloc(self, linx, size, sig_no):
+        '''
+        linx_alloc
+        Matches linx function:
+        union LINX_SIGNAL *linx_alloc(LINX * linx, LINX_OSBUFSIZE size, LINX_SIGSELECT sig_no);
+        '''
+        linx_alloc = self.liblinx.linx_alloc
+        linx_alloc.argtypes = [POINTER(LINX), c_int, c_uint]
+        linx_alloc.restype = POINTER(self.signalClass)
+        return linx_alloc(linx, size, sig_no)
+    
+    def linx_free_buf(self, linx, sig):
+        '''
+        linx_free
+        Matches linx function:
+        int linx_free_buf(LINX * linx, union LINX_SIGNAL **sig);
+        '''
+        linx_free_buf = self.liblinx.linx_free_buf
+        linx_free_buf.argtypes = [POINTER(LINX), POINTER(POINTER(self.signalClass))]
+        return linx_free_buf(linx, sig)
+    
+    def setSignalClass(self, signalClass):
+        '''
+        getSignalClassFrom
+        Utility function to get the correct class for signal from pointer
+        '''
+        self.signalClass = signalClass
+        
+    def linx_send(self, linx, sig, to):
         '''
         linx_send
         Matches linx function:
-        LINX_SPID linx_sender(LINX * linx, union LINX_SIGNAL **sig);
+        int linx_send(LINX * linx, union LINX_SIGNAL **sig, LINX_SPID to);
         '''
-        
+        linx_send = self.liblinx.linx_send
+        linx_send.argtypes = [POINTER(LINX), POINTER(POINTER(self.signalClass)), c_uint]
+        return linx_send(linx, sig, to)
         
 class LINK(Structure):
     pass
@@ -99,10 +130,6 @@ class LINX(Structure):
                 ("free_buffer", POINTER(LINXSigAdm))
                 ]
 
-class LINX_SIGNAL(Union):
-    '''
-    Linx Signal,
-    You may have do dynamically add fields to this signal to handle signal data
-    '''
-    _fields_ = [("sig_no", c_uint)
-                ]
+class BaseSignal(Structure):
+    _fields_ = [("sig_no", c_uint),
+                 ]

@@ -1,14 +1,14 @@
 '''
 Created on 15 okt 2013
 
-@author: bjorn
+@author: Bjorn Arnelid
 '''
 
-from ctypes import pointer
-from linxWrapper import LinxWrapper, LINX_SIGNAL
+from ctypes import pointer, sizeof
+from linxWrapper import LinxWrapper
 
 
-class Linx(object):
+class LinxAdapter(object):
     '''
     Wrapper for communicating with Linx from Python.
     '''
@@ -30,10 +30,9 @@ class Linx(object):
         Opens linx socket using clientName as handle. options and args is also sent
         into the api
         '''
-        # Linx library will crash and burn when name is NULL
+        # Should fail if None
         if(clientName == None):
             raise LinxException("Client Name must not be None")
-        
         ref = self.wrapper.linx_open(clientName,options,None)
         if not ref:
             raise LinxException("Linx exited in fail state when initializing")
@@ -45,8 +44,7 @@ class Linx(object):
         Hunts for server on huntPath. Return signal is either huntSignal or 
         LINX_OS_HUNT_SIG if huntSignal is set to None
         '''
-        #TODO huntsignal is pointer-to-pointer
-        #Linx library will crash and burn when huntPath is NULL
+        #Should fail if None
         if(huntPath == None):
             raise LinxException("HuntPath must not be None")
         state = self.wrapper.linx_hunt(self.instance, huntPath, huntSignal)
@@ -54,14 +52,14 @@ class Linx(object):
             raise LinxException("Linx exited in fail state when hunting for server " + huntPath)
         return state
     
-    def receiveWTMO(self, timeout, sigsel):
+    def receiveWTMO(self, sig, timeout, sigsel):
         '''
         receiveWTMO
         receive signal declared in sigsel within timeout. Method will throw 
         LinxException if no signal is received before timeout
         '''
-        signal = LINX_SIGNAL()
-        spp = pointer(pointer(signal))
+        spp = pointer(pointer(sig))
+        self.wrapper.setSignalClass(sig.__class__)
         state = self.wrapper.linx_receive_w_tmo(self.instance, spp, timeout, sigsel)
         if(state == -1):
             raise LinxException("Linx exited in fail state when waiting for signal")
@@ -75,8 +73,14 @@ class Linx(object):
         findSender
         Looks for the sender of signal
         '''
+        #Should fail if None
+        if(signal == None):
+            raise LinxException("Signal cannot be None")
+        self.wrapper.setSignalClass(signal.__class__)
         spp = pointer(pointer(signal))
         sender = self.wrapper.linx_sender(self.instance, spp)
+        if(sender == 0):
+            raise LinxException(("Linx returned errorstate %d", sender))
         return sender
     
     def attach(self, signal, server):
@@ -93,12 +97,39 @@ class Linx(object):
         if(state == 0):
             raise LinxException("Linx failed to attach to server with ID " + str(server))
         
-    def send(self):
+    def alloc(self, signal):
+        '''
+        alloc
+        Method to allocate buffer space for signal to send
+        '''
+        self.wrapper.setSignalClass(signal.__class__)
+        sp = self.wrapper.linx_alloc(self.instance, sizeof(signal), signal.sig_no)
+        if(not sp):
+            raise LinxException("Linx failed to alloc signal")
+        return sp.contents
+    
+    def free(self, signal):
+        '''
+        free
+        Method to free up signal buffer in linx.
+        '''
+        spp = pointer(pointer(signal))
+        self.wrapper.setSignalClass(signal.__class__)
+        return self.wrapper.linx_free_buf(self.instance, spp)
+        
+    def send(self, signal, to):
         '''
         send
+        Method to send signal to target
         '''
-        self.wrapper.linx_send()
-        raise LinxException("Linx failed to send signal")
+        #Should fail if None
+        if(signal == None):
+            raise LinxException("Signal cannot be None")
+        spp = pointer(pointer(signal))
+        state = self.wrapper.linx_send(self.instance, spp, to)
+        if(state == -1):
+            raise LinxException("LinxAdapter failed to send signal")
+        return state
     
 class LinxException(Exception):
     def __init__(self, value):
