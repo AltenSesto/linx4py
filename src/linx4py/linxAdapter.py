@@ -64,7 +64,7 @@ class LinxAdapter(object):
         if(state == -1):
             raise LinxException("Linx exited in fail state when waiting for signal")
         if(not spp.contents):
-            raise LinxException("Linx timed out waiting for signal")
+            return None
         sp = spp.contents
         return sp.contents
     

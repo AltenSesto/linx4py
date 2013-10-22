@@ -14,7 +14,6 @@ class Test(unittest.TestCase):
     Unit tests for linx module in linx4py, requires following:
     Linx2.5.1 installed on current computer
     LinxAdapter kernel modules loaded into system
-    LD_LIBRARY_PATH set to point at linx libraries 
     '''
     process = None
 
@@ -54,12 +53,12 @@ class Test(unittest.TestCase):
         SigArrayType =  c_uint * 2
         return SigArrayType(1,251)
         
-    def testRecieveWTMOErrorWhenTimeOut(self):
+    def testRecieveWTMONoneWhenTimeOut(self):
         linxInstance = self.openLinx("MyClientName")
         linxInstance.hunt("not_existing_server", None)
         hunt = self.getHuntSignal()
-        self.failUnlessRaises(linxAdapter.LinxException, linxInstance.receiveWTMO, LINX_SIGNAL(), 
-                              500, hunt)
+        signal = linxInstance.receiveWTMO(LINX_SIGNAL(), 500, hunt)
+        self.assertIsNone(signal, "Should return None but is " + str(signal))
     
     def testRecieveWTMOReturnsOSHuntSignal(self):
         linxInstance = self.openLinx("MyClientName")
