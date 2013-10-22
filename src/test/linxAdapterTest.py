@@ -7,9 +7,7 @@ from ctypes import POINTER, c_uint, c_int, Structure, Union
 import subprocess
 import unittest
 
-from linx4py import linxWrapper
-from linx4py import linxAdapter
-
+from linx4py import linxWrapper, linxAdapter
 
 class Test(unittest.TestCase):
     '''
@@ -99,26 +97,29 @@ class Test(unittest.TestCase):
         self.assertNotEqual(0, linxInstance.attach(None, serverID))
         
     def findServer(self, linxInstance, name):
-        linxInstance.hunt("example_server", None)
+        linxInstance.hunt(name, None)
         hunt = self.getHuntSignal()
         signal = linxInstance.receiveWTMO(LINX_SIGNAL(), 10000, hunt)
         return linxInstance.findSender(signal)
         
     def testAllocReturnsSignal(self):
         linxInstance = self.openLinx("MyClientName")
-        s = REQUEST_SIGNAL(0x3340, 1)
+        s = LINX_SIGNAL()
+        s.sig_no = 0x3340
         signal = linxInstance.alloc(s)
-        self.assertEquals(signal.sig_no, 0x3340, ("LinxAdapter should return REQUEST_SIGNAL but returns sig_no ", signal.sig_no))
+        self.assertIsNotNone(signal.sig_no, "LinxAdapter should return REQUEST_SIGNAL")
         
     def testAllocThrowsExceptionWhenFails(self):
         linxInstance = self.openLinx("MyClientName")
         linxInstance.wrapper = TestAllocWrapper()
-        s = REQUEST_SIGNAL(0x3340, 1)
+        s = LINX_SIGNAL()
+        s.sig_no = 0x3340
         self.failUnlessRaises(linxAdapter.LinxException, linxInstance.alloc, s)
         
     def testFreeBufferShouldNotReturnNegative(self):
         linxInstance = self.openLinx("MyClientName")
-        s = REQUEST_SIGNAL(0x3340, 1)
+        s = LINX_SIGNAL()
+        s.sig_no = 0x3340
         signal = linxInstance.alloc(s)
         self.assertNotEqual(-1, linxInstance.free(signal), "Free buffer returned errorcode -1")
         
@@ -130,30 +131,45 @@ class Test(unittest.TestCase):
     def testSendSignalDoesNotReturnError(self):
         linxInstance = self.openLinx("MyClientName")
         serverID = self.findServer(linxInstance, "example_server")
-        s = REQUEST_SIGNAL(0x3340, 2)
+        s = LINX_SIGNAL()
+        s.sig_no = 0x3340
         signal =linxInstance.alloc(s)
+        signal.request.seqno = 1
         state = linxInstance.send(signal, serverID)
         self.assertNotEqual(-1, state, "LinxAdapter send should not return -1")
         
     def testSendSignalThrowExceptionWhenFail(self):
         linxInstance = self.openLinx("MyClientName")
-        s = REQUEST_SIGNAL(0x3340, 2)
+        s = LINX_SIGNAL()
+        s.sig_no = 0x3340
         signal =linxInstance.alloc(s)
+        signal.request.seqno = 2
         self.failUnlessRaises(linxAdapter.LinxException, linxInstance.send, signal, 42)
         
-    def sendSignal(self, linxInstance, signal, serverID):
-        s = REQUEST_SIGNAL(0x3340, 2)
+    def sendSignal(self, linxInstance, signalNo, serverID):
+        s = LINX_SIGNAL()
+        s.sig_no = 0x3340
         signal =linxInstance.alloc(s)
+        signal.request.seqno = signalNo
         return linxInstance.send(signal, serverID)
     
     def testReplyIsResponseSignal(self):
         linxInstance = self.openLinx("MyClientName")
         serverID = self.findServer(linxInstance, "example_server")
-        self.sendSignal(linxInstance, REQUEST_SIGNAL(0x3340, 2), serverID)
+        self.sendSignal(linxInstance, 3, serverID)
         SigArrayType = c_uint * 1
         anySig = SigArrayType(0)
         signal = linxInstance.receiveWTMO(LINX_SIGNAL(), 10000, anySig)
-        self.assertEquals(signal.sig_no, 0x3341,("LinxAdapter should return REPLY_SIGNAL but returns sig_no %d", signal.sig_no))
+        self.assertEquals(signal.reply.sig_no, 0x3341,("LinxAdapter should return REPLY_SIGNAL but returns sig_no %d", signal.reply.sig_no))
+        
+    def testCanReadReplySeqno(self):
+        linxInstance = self.openLinx("MyClientName")
+        serverID = self.findServer(linxInstance, "example_server")
+        self.sendSignal(linxInstance, 4, serverID)
+        SigArrayType = c_uint * 1
+        anySig = SigArrayType(0)
+        signal = linxInstance.receiveWTMO(LINX_SIGNAL(), 10000, anySig)
+        self.assertEquals(signal.reply.seqno, 4,("LinxAdapter should return REPLY_SIGNAL but returns sig_no %d", signal.reply.seqno))
         
 class TestOpenWrapper(linxWrapper.LinxWrapper):
     # Overrides LinxWrapper 

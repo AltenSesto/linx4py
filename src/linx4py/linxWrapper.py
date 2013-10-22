@@ -11,6 +11,7 @@ class LinxWrapper(object):
     LinxWrapper
     Linxwrapper mirrors linx.h directly making the function calls as similar as possible
     '''
+    
     liblinx = None
     signalClass = None
 
@@ -133,3 +134,4 @@ class LINX(Structure):
 class BaseSignal(Structure):
     _fields_ = [("sig_no", c_uint),
                  ]
+
