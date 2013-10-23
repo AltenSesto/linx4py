@@ -112,6 +112,16 @@ class LinxWrapper(object):
         linx_send = self.liblinx.linx_send
         linx_send.argtypes = [POINTER(LINX), POINTER(POINTER(self.signalClass)), c_uint]
         return linx_send(linx, sig, to)
+    
+    def linx_close(self, linx):
+        '''
+        linx_close
+        Matches linx function:
+        int linx_close(LINX * linx);
+        '''
+        linx_close = self.liblinx.linx_close
+        linx_close.argtypes = [POINTER(LINX)]
+        return linx_close(linx)
         
 class LINK(Structure):
     pass

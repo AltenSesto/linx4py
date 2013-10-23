@@ -170,6 +170,18 @@ class Test(unittest.TestCase):
         signal = linxInstance.receiveWTMO(LINX_SIGNAL(), 10000, anySig)
         self.assertEquals(signal.reply.seqno, 4,("LinxAdapter should return REPLY_SIGNAL but returns sig_no %d", signal.reply.seqno))
         
+    def testCloseLinxInstanceIsNone(self):
+        linxInstance = self.openLinx("MyClientName")
+        linxInstance.close()
+        print linxInstance.instance
+        self.assertFalse(linxInstance.instance, "Instance should be NullPointer after close")
+        
+    def testCloseLinxThrowsExceptionWhenFail(self):
+        linxInstance = linxAdapter.LinxAdapter()
+        linxInstance.wrapper = TestCloseWrapper()
+        linxInstance.instance = linxWrapper.LINX()
+        self.failUnlessRaises(linxAdapter.LinxException, linxInstance.close)
+        
 class TestOpenWrapper(linxWrapper.LinxWrapper):
     # Overrides LinxWrapper 
     # and pretends something went horribly wrong when calling linx_open
@@ -194,6 +206,12 @@ class TestAllocWrapper(linxWrapper.LinxWrapper):
     # and pretends something went horribly wrong when calling linx_alloc
     def linx_alloc(self, linx, size, sig_no):
         return POINTER(LINX_SIGNAL)()
+    
+class TestCloseWrapper(linxWrapper.LinxWrapper):
+    # Overrides LinxWrapper 
+    # and pretends something went horribly wrong when calling linx_close
+    def linx_close(self, linx):
+        return -1
     
 class REQUEST_SIGNAL(Structure):
     _fields_ = [("sig_no", c_uint),

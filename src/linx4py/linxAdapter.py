@@ -55,8 +55,8 @@ class LinxAdapter(object):
     def receiveWTMO(self, sig, timeout, sigsel):
         '''
         receiveWTMO
-        receive signal declared in sigsel within timeout. Method will throw 
-        LinxException if no signal is received before timeout
+        receive signal declared in sigsel within timeout. Method will return None
+        if no signal is recieved within timeout
         '''
         spp = pointer(pointer(sig))
         self.wrapper.setSignalClass(sig.__class__)
@@ -120,15 +120,24 @@ class LinxAdapter(object):
     def send(self, signal, to):
         '''
         send
-        Method to send signal to target
+        Method to send signal to target, the method will "consume" the signal, 
+        freeing the linx bufferspace
         '''
         #Should fail if None
         if(signal == None):
             raise LinxException("Signal cannot be None")
         spp = pointer(pointer(signal))
         state = self.wrapper.linx_send(self.instance, spp, to)
+        signal = None
         if(state == -1):
             raise LinxException("LinxAdapter failed to send signal")
+        return state
+    
+    def close(self):
+        state = self.wrapper.linx_close(self.instance)
+        if state == -1:
+            raise LinxException("Linx failed to close")
+        self.instance = None
         return state
     
 class LinxException(Exception):

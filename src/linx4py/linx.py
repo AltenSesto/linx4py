@@ -22,6 +22,11 @@ class Linx(object):
         self.adapter = LinxAdapter()
         self.adapter.open(name, 0, None)
         
+    def __del__(self):
+        if(not self.adapter.instance == None):
+            self.adapter.close()
+        self.adapter = None
+        
     def findServer(self, name, timeout):
         '''
         findServer
@@ -41,7 +46,7 @@ class Linx(object):
     def send(self, signal, serverID):
         '''
         send
-        Sends signal to server
+        Sends signal to server, The signal is consumed and cannot be used again after send
         '''
         self.adapter.send(signal, serverID)
 
