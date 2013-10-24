@@ -11,9 +11,6 @@ class LinxWrapper(object):
     LinxWrapper
     Linxwrapper mirrors linx.h directly making the function calls as similar as possible
     '''
-    
-    liblinx = None
-    signalClass = None
 
     def __init__(self):
         '''
@@ -55,6 +52,17 @@ class LinxWrapper(object):
                                        c_uint, POINTER(c_uint)]
         return linx_receive_w_tmo(linx, sig, tmo, sig_sel)
     
+    def linx_receive(self, linx, sig, sig_sel):
+        '''
+        linx_receive
+        Matches linx function:
+        int linx_receive(LINX * linx, union LINX_SIGNAL **sig, const LINX_SIGSELECT * sig_sel);
+        '''
+        linx_receive = self.liblinx.linx_receive
+        linx_receive.argtypes = [POINTER(LINX), POINTER(POINTER(self.signalClass)), 
+                                       POINTER(c_uint)]
+        return linx_receive(linx, sig, sig_sel)
+    
     def linx_sender(self, linx, sig):
         '''
         linx_sender
@@ -64,6 +72,16 @@ class LinxWrapper(object):
         linx_sender = self.liblinx.linx_sender
         linx_sender.argtypes = [POINTER(LINX), POINTER(POINTER(self.signalClass))]
         return linx_sender(linx, sig)
+    
+    def linx_get_spid(self, linx):
+        '''
+        linx_get_spid
+        Matches linx function:
+        LINX_SPID linx_get_spid(LINX * linx);
+        '''
+        linx_get_spid = self.liblinx.linx_get_spid
+        linx_get_spid.argtypes = [POINTER(LINX)]
+        return linx_get_spid(linx)
         
     def linx_attach(self, linx, sig, spid):
         '''
@@ -74,6 +92,16 @@ class LinxWrapper(object):
         linx_attach = self.liblinx.linx_attach
         linx_attach.argtypes = [POINTER(LINX), POINTER(POINTER(self.signalClass)), c_uint]
         return linx_attach(linx, sig, spid)
+    
+    def linx_detach(self, linx, attref):
+        '''
+        linx_detach
+        Matches linx function:
+        int linx_detach(LINX * linx, LINX_OSATTREF * attref);
+        '''
+        linx_detach = self.liblinx.linx_detach
+        linx_detach.argtypes = [POINTER(LINX), POINTER(c_uint)]
+        return linx_detach(linx, attref)
     
     def linx_alloc(self, linx, size, sig_no):
         '''
@@ -103,7 +131,7 @@ class LinxWrapper(object):
         '''
         self.signalClass = signalClass
         
-    def linx_send(self, linx, sig, to):
+    def linx_send(self, linx, sig, toID):
         '''
         linx_send
         Matches linx function:
@@ -111,7 +139,17 @@ class LinxWrapper(object):
         '''
         linx_send = self.liblinx.linx_send
         linx_send.argtypes = [POINTER(LINX), POINTER(POINTER(self.signalClass)), c_uint]
-        return linx_send(linx, sig, to)
+        return linx_send(linx, sig, toID)
+    
+    def linx_send_w_s(self, linx, sig, fromID, toID):
+        '''
+        linx_send_w_s
+        Matches linx function:
+        int linx_send_w_s(LINX * linx, union LINX_SIGNAL **sig, LINX_SPID from, LINX_SPID to);
+        '''
+        linx_send_w_s = self.liblinx.linx_send_w_s
+        linx_send_w_s.argtypes = [POINTER(LINX), POINTER(POINTER(self.signalClass)), c_uint]
+        return linx_send_w_s(linx, sig, fromID, toID)
     
     def linx_close(self, linx):
         '''
@@ -144,4 +182,3 @@ class LINX(Structure):
 class BaseSignal(Structure):
     _fields_ = [("sig_no", c_uint),
                  ]
-

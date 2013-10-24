@@ -3,10 +3,11 @@ Created on 15 okt 2013
 
 @author: Bjorn Arnelid
 '''
-from ctypes import POINTER, c_uint, c_int, Structure, Union
-import subprocess
 import unittest
+from ctypes import POINTER, c_uint, cast
 
+import server
+from signals import LINX_SIGNAL, BASE_SIGNAL
 from linx4py import linxWrapper, linxAdapter
 
 class Test(unittest.TestCase):
@@ -15,11 +16,16 @@ class Test(unittest.TestCase):
     Linx2.5.1 installed on current computer
     LinxAdapter kernel modules loaded into system
     '''
-    process = None
+    
 
     @classmethod
     def setUpClass(self):
-        self.process = subprocess.Popen("linx_basic_server")
+        self.server_name = "example_server"
+        self.process = server.getServer(self.server_name)
+        
+    @classmethod
+    def tearDownClass(self):
+        self.process.stop()
 
     def testLinxShouldThrowExceptionifNameisNone(self):
         linxInstance = linxAdapter.LinxAdapter()
@@ -41,13 +47,13 @@ class Test(unittest.TestCase):
      
     def testHuntReturns0(self):
         linxInstance = self.openLinx("MyClientName")
-        status = linxInstance.hunt("example_server", None)
+        status = linxInstance.hunt(self.server_name, None)
         self.assertEqual(0, status, ("Hunt should return 0 but returns %d", status))
         
     def testHuntThrowsExceptionWhenNotOpen(self):
         linxInstance = self.openLinx("MyClientName")
         linxInstance.wrapper = TestHuntWrapper() 
-        self.failUnlessRaises(linxAdapter.LinxException, linxInstance.hunt, "example_server", None)
+        self.failUnlessRaises(linxAdapter.LinxException, linxInstance.hunt, self.server_name, None)
         
     def getHuntSignal(self):
         SigArrayType =  c_uint * 2
@@ -62,14 +68,14 @@ class Test(unittest.TestCase):
     
     def testRecieveWTMOReturnsOSHuntSignal(self):
         linxInstance = self.openLinx("MyClientName")
-        linxInstance.hunt("example_server", None)
+        linxInstance.hunt(self.server_name, None)
         hunt = self.getHuntSignal()
         signal =  linxInstance.receiveWTMO(LINX_SIGNAL(), 10000, hunt)
         self.assertEquals(251, signal.sig_no, "Function exited with Errorcode")
         
     def testFindSenderFromSignal(self):
         linxInstance = self.openLinx("MyClientName")
-        linxInstance.hunt("example_server", None)
+        linxInstance.hunt(self.server_name, None)
         hunt = self.getHuntSignal()
         signal =  linxInstance.receiveWTMO(LINX_SIGNAL(), 10000, hunt)
         self.assertNotEqual(0, linxInstance.findSender(signal))
@@ -82,18 +88,28 @@ class Test(unittest.TestCase):
         
     def testThrowErrorWhenAttachFails(self):
         linxInstance = self.openLinx("MyClientName")
-        linxInstance.hunt("example_server", None)
+        linxInstance.hunt(self.server_name, None)
         hunt = self.getHuntSignal()
         linxInstance.receiveWTMO(LINX_SIGNAL(), 10000, hunt)
         self.failUnlessRaises(linxAdapter.LinxException, linxInstance.attach, None, 0)
          
     def testAttachToServer(self):
         linxInstance = self.openLinx("MyClientName")
-        linxInstance.hunt("example_server", None)
+        linxInstance.hunt(self.server_name, None)
         hunt = self.getHuntSignal()
         signal = linxInstance.receiveWTMO(LINX_SIGNAL(), 10000, hunt)
         serverID = linxInstance.findSender(signal)
         self.assertNotEqual(0, linxInstance.attach(None, serverID))
+        
+    def testDetachFromServer(self):
+        linxInstance = self.openLinx("MyClientName")
+        linxInstance.hunt(self.server_name, None)
+        hunt = self.getHuntSignal()
+        signal = linxInstance.receiveWTMO(LINX_SIGNAL(), 10000, hunt)
+        serverID = linxInstance.findSender(signal)
+        ref = linxInstance.attach(None, serverID)
+        state = linxInstance.detach(ref)
+        self.assertNotEqual(-1, state, "State should not be -1")
         
     def findServer(self, linxInstance, name):
         linxInstance.hunt(name, None)
@@ -122,20 +138,40 @@ class Test(unittest.TestCase):
         signal = linxInstance.alloc(s)
         self.assertNotEqual(-1, linxInstance.free(signal), "Free buffer returned errorcode -1")
         
-    def testThrowErrorWhenSignalNull(self):
+    def testGetPID(self):
         linxInstance = self.openLinx("MyClientName")
-        self.findServer(linxInstance, "example_server")
+        self.assertGreater(linxInstance.getSPID(), 0, "SPID should be greater then 0 but is %d" 
+                           % linxInstance.getSPID())
+        
+    def testSendSignalThrowErrorWhenSignalNull(self):
+        linxInstance = self.openLinx("MyClientName")
+        self.findServer(linxInstance, self.server_name)
         self.failUnlessRaises(linxAdapter.LinxException, linxInstance.send, None, 0)
         
     def testSendSignalDoesNotReturnError(self):
         linxInstance = self.openLinx("MyClientName")
-        serverID = self.findServer(linxInstance, "example_server")
+        serverID = self.findServer(linxInstance, self.server_name)
         s = LINX_SIGNAL()
         s.sig_no = 0x3340
         signal =linxInstance.alloc(s)
         signal.request.seqno = 1
         state = linxInstance.send(signal, serverID)
         self.assertNotEqual(-1, state, "LinxAdapter send should not return -1")
+        
+    def testSendSignalWithOtherSenderDoNotReturnError(self):
+        senderInstance = self.openLinx("MySenderName")
+        receiverInstance = self.openLinx("MyReceiverName")
+        receiverID = receiverInstance.getSPID()
+        serverID = self.findServer(senderInstance, self.server_name)
+        s = LINX_SIGNAL()
+        s.sig_no = 0x3340
+        signal =senderInstance.alloc(s)
+        signal.request.seqno = 1
+        senderInstance.send(signal, serverID, receiverID)
+        SigArrayType = c_uint * 1
+        anySig = SigArrayType(0)
+        self.assertIsNotNone(receiverInstance.receiveWTMO(s, 10000, anySig), 
+                             "Received signal must not be None")
         
     def testSendSignalThrowExceptionWhenFail(self):
         linxInstance = self.openLinx("MyClientName")
@@ -154,7 +190,7 @@ class Test(unittest.TestCase):
     
     def testReplyIsResponseSignal(self):
         linxInstance = self.openLinx("MyClientName")
-        serverID = self.findServer(linxInstance, "example_server")
+        serverID = self.findServer(linxInstance, self.server_name)
         self.sendSignal(linxInstance, 3, serverID)
         SigArrayType = c_uint * 1
         anySig = SigArrayType(0)
@@ -163,25 +199,52 @@ class Test(unittest.TestCase):
         
     def testCanReadReplySeqno(self):
         linxInstance = self.openLinx("MyClientName")
-        serverID = self.findServer(linxInstance, "example_server")
+        serverID = self.findServer(linxInstance, self.server_name)
         self.sendSignal(linxInstance, 4, serverID)
         SigArrayType = c_uint * 1
         anySig = SigArrayType(0)
         signal = linxInstance.receiveWTMO(LINX_SIGNAL(), 10000, anySig)
         self.assertEquals(signal.reply.seqno, 4,("LinxAdapter should return REPLY_SIGNAL but returns sig_no %d", signal.reply.seqno))
         
+    def testCanReceiveWithouthuntSig(self):
+        linxInstance = self.openLinx("MyClientName")
+        serverID = self.findServer(linxInstance, self.server_name)
+        self.sendSignal(linxInstance, 5, serverID)
+        signal = linxInstance.receiveWTMO(LINX_SIGNAL(), 10000, None)
+        self.assertIsNotNone(signal, "received signal should not be None!")
+        
+    def testCanReceiveWithoutTimeout(self):
+        linxInstance = self.openLinx("MyClientName")
+        serverID = self.findServer(linxInstance, self.server_name)
+        self.sendSignal(linxInstance, 6, serverID)
+        SigArrayType = c_uint * 1
+        anySig = SigArrayType(0)
+        signal = linxInstance.receiveWTMO(LINX_SIGNAL(), None, anySig)
+        self.assertIsNotNone(signal, "received signal should not be None!")
+        
+    def testCastSignalToOther(self):
+        linxInstance = self.openLinx("MyClientName")
+        serverID = self.findServer(linxInstance, self.server_name)
+        self.sendSignal(linxInstance, 7, serverID)
+        sp = linxInstance.receivePointerWTMO(BASE_SIGNAL(), 10000, None)
+        signal = cast(sp, POINTER(LINX_SIGNAL))
+        self.assertEquals(7, signal.contents.reply.seqno)
+        
     def testCloseLinxInstanceIsNone(self):
         linxInstance = self.openLinx("MyClientName")
         linxInstance.close()
-        print linxInstance.instance
-        self.assertFalse(linxInstance.instance, "Instance should be NullPointer after close")
+        self.assertIsNone(linxInstance.instance, "Instance should be NullPointer after close")
         
     def testCloseLinxThrowsExceptionWhenFail(self):
         linxInstance = linxAdapter.LinxAdapter()
         linxInstance.wrapper = TestCloseWrapper()
         linxInstance.instance = linxWrapper.LINX()
         self.failUnlessRaises(linxAdapter.LinxException, linxInstance.close)
-        
+
+
+
+
+
 class TestOpenWrapper(linxWrapper.LinxWrapper):
     # Overrides LinxWrapper 
     # and pretends something went horribly wrong when calling linx_open
@@ -212,26 +275,6 @@ class TestCloseWrapper(linxWrapper.LinxWrapper):
     # and pretends something went horribly wrong when calling linx_close
     def linx_close(self, linx):
         return -1
-    
-class REQUEST_SIGNAL(Structure):
-    _fields_ = [("sig_no", c_uint),
-                ("seqno", c_int)
-                ]
-    
-class REPLY_SIGNAL(Structure):
-    _fields_ = [("sig_no", c_uint),
-                ("seqno", c_int)
-                ]
-    
-class LINX_SIGNAL(Union):
-    '''
-    LinxAdapter Signal,
-    Taken from linx basic example
-    '''
-    _fields_ = [("sig_no", c_uint),
-                ("request", REQUEST_SIGNAL), 
-                ("reply", REPLY_SIGNAL),
-                ]
     
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

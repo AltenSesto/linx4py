@@ -12,7 +12,6 @@ class Linx(object):
     '''
     Class for communicating with other systems through Linx signals. 
     '''
-    adapter = None
 
     def __init__(self, name):
         '''
@@ -46,7 +45,7 @@ class Linx(object):
     def send(self, signal, serverID):
         '''
         send
-        Sends signal to server, The signal is consumed and cannot be used again after send
+        Sends signal toID server, The signal is consumed and cannot be used again after send
         '''
         self.adapter.send(signal, serverID)
 
