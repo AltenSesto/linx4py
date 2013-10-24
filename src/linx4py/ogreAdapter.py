@@ -8,6 +8,7 @@ OgreAdapter is used to work with the ogre workflow, using linx4py.
 '''
 
 import linx
+import signalAdapter
 
 from ctypes import Structure, c_uint
 
@@ -165,10 +166,9 @@ class Linx(object):
             mysignal = gw.receive(timeout=1000) # wait max 1 second
         """
         sig = BASIC_LINX_SIGNAL()
-        signal = self.adapter.receiveWTMO(sig, timeout, sig_sel)
-        # Cast to proper signal
-        returnSignal = signalAdapter.castToCorrect(signal)
-        return returnSignal
+        sp = self.adapter.receivePointerWTMO(sig, timeout, sig_sel)
+        signal = signalAdapter.castToCorrect(sp)
+        return signal
         
         
     def init_async_receive(self, sig_sel=None):
@@ -184,6 +184,7 @@ class Linx(object):
             signal = gw.async_receive()
             gw.cancel_async_receive()
         """
+        # This will be truly async, not fake async as the ol ogre linx solution
         pass
 
     def cancel_async_receive(self):
