@@ -153,7 +153,7 @@ class LinxAdapter(object):
         if(fromID == None):
             state = self.wrapper.linx_send(self.instance, spp, toID)
         else:
-            state = self.wrapper.linx_send_w_s(self.instance, spp, toID, fromID)
+            state = self.wrapper.linx_send_w_s(self.instance, spp, fromID, toID)
         signal = None
         if(state == -1):
             raise LinxException("LinxAdapter failed to send signal")

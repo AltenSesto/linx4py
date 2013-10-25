@@ -45,19 +45,28 @@ class Test(unittest.TestCase):
         signal.request.seqno = signalNo
         return linxInstance.send(signal, serverID, receiverID)
     
-#     def testReceiveSignalAsync(self):
-#         receiverInstance = self.openLinx("MyReceiverName")
-#         receiverID = receiverInstance.getSPID()
-#         senderInstance = self.openLinx("MySenderName")
-#         serverID = self.findServer(senderInstance, self.server_name)
-#         receiver = AsyncReceiver(receiverInstance)
-#         receiver.initReceive()
-#         self.sendSignal(senderInstance, 1, serverID, receiverID)
-#         time.sleep(1)
-#         sp = receiver.receive()
-#         receiver.stopReceive()
-#         self.assertEqual(0x3341, sp.contents.reply.sig_no)
-
+    def testReceiveSignalAsync(self):
+        receiverInstance = self.openLinx("MyReceiverName")
+        receiverID = receiverInstance.getSPID()
+        senderInstance = self.openLinx("MySenderName")
+        serverID = self.findServer(senderInstance, self.server_name)
+        receiver = AsyncReceiver(receiverInstance)
+        receiver.addSignalType(0x3341, LINX_SIGNAL)
+        receiver.initReceive()
+        self.sendSignal(senderInstance, 1, serverID, receiverID)
+        # Making sure we would have timed out if not async
+        time.sleep(2) 
+        signal = receiver.receive()
+        receiver.stopReceive()
+        self.assertEqual(0x3341, signal.reply.sig_no)
+        
+    def testReceiveAsyncEmpty(self):
+        receiverInstance = self.openLinx("MyReceiverName")
+        receiver = AsyncReceiver(receiverInstance)
+        receiver.initReceive()
+        signal = receiver.receive()
+        receiver.stopReceive()
+        self.assertIsNone(signal, "signal should be None when que is empty")
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testReceiveSignal']

@@ -8,6 +8,7 @@ from threading import Thread
 
 from linxWrapper import BaseSignal
 from linxConstants import LINX_NO_SIG_SEL
+from signalCollection import SignalCollection
 
 class AsyncReceiver(Thread):
     '''
@@ -23,6 +24,7 @@ class AsyncReceiver(Thread):
         '''
         Thread.__init__(self)
         self.signals = []
+        self.signalCollection = SignalCollection()
         self.adapter = adapter
         
     def initReceive(self, sigsel = LINX_NO_SIG_SEL):
@@ -45,12 +47,23 @@ class AsyncReceiver(Thread):
             sig = BaseSignal()
             sp = self.adapter.receivePointerWTMO(sig, self.receiveTimeout, self.sigsel)
             self.signals.append(sp)
+            
+    def addSignalType(self, signalID, SignalClass):
+        '''
+        addSignalType
+        Add a signal class to signalCollection, signal can then be collected dynamically 
+        by looking at the signalID
+        '''
+        self.signalCollection.addSignal(signalID, SignalClass)
     
     def receive(self):
         '''
         Get and remove first signal in signal list
         '''
-        return self.signals.pop(0)
+        if(not self.signals):
+            return None
+        sp = self.signals.pop(0)
+        return self.signalCollection.castToCorrect(sp)
 
     def stopReceive(self):
         '''

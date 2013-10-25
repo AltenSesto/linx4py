@@ -8,7 +8,6 @@ OgreAdapter is used to work with the ogre workflow, using linx4py.
 '''
 
 import linx
-import signalAdapter
 
 from ctypes import Structure, c_uint
 
@@ -167,8 +166,9 @@ class Linx(object):
         """
         sig = BASIC_LINX_SIGNAL()
         sp = self.adapter.receivePointerWTMO(sig, timeout, sig_sel)
-        signal = signalAdapter.castToCorrect(sp)
-        return signal
+        # Fix this using signal collection 
+        #signal = signalAdapter.castToCorrect(sp)
+        return sp
         
         
     def init_async_receive(self, sig_sel=None):
