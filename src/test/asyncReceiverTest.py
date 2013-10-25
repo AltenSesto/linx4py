@@ -4,6 +4,7 @@ Created on 24 okt 2013
 @author: bjorn
 '''
 import unittest
+import time
 from ctypes import c_uint
 
 from linx4py.linxAdapter import LinxAdapter
@@ -37,22 +38,25 @@ class Test(unittest.TestCase):
         signal = linxInstance.receiveWTMO(LINX_SIGNAL(), 10000, hunt)
         return linxInstance.findSender(signal)
 
-    def sendSignal(self, linxInstance, signalNo, serverID):
+    def sendSignal(self, linxInstance, signalNo, serverID, receiverID):
         s = LINX_SIGNAL()
         s.sig_no = 0x3340
         signal =linxInstance.alloc(s)
         signal.request.seqno = signalNo
-        return linxInstance.send(signal, serverID)
+        return linxInstance.send(signal, serverID, receiverID)
     
-    def testReceiveSignalAsync(self):
-        linxInstance = self.openLinx("MyClientName")
-        serverID = self.findServer(linxInstance, self.server_name)
-        receiver = AsyncReceiver(linxInstance)
-        receiver.initReceive()
-        self.sendSignal(linxInstance, 1, serverID)
-        sp = receiver.receive()
-        receiver.stopReceive()
-        self.assertEqual(0x3341, sp.contents.sig_no)
+#     def testReceiveSignalAsync(self):
+#         receiverInstance = self.openLinx("MyReceiverName")
+#         receiverID = receiverInstance.getSPID()
+#         senderInstance = self.openLinx("MySenderName")
+#         serverID = self.findServer(senderInstance, self.server_name)
+#         receiver = AsyncReceiver(receiverInstance)
+#         receiver.initReceive()
+#         self.sendSignal(senderInstance, 1, serverID, receiverID)
+#         time.sleep(1)
+#         sp = receiver.receive()
+#         receiver.stopReceive()
+#         self.assertEqual(0x3341, sp.contents.reply.sig_no)
 
 
 if __name__ == "__main__":

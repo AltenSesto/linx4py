@@ -51,3 +51,9 @@ class AsyncReceiver(Thread):
         Get and remove first signal in signal list
         '''
         return self.signals.pop(0)
+
+    def stopReceive(self):
+        '''
+        Stop Async reciever
+        '''
+        self.shouldQuit = True

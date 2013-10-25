@@ -31,8 +31,9 @@ class TestServer(Thread):
     def main(self):
         print "Server started."
         linxInstance = linx.Linx(self.name)
+        linxInstance.addSignalType(0x3340, LINX_SIGNAL)
         while(not self.shouldQuit):
-            sig = linxInstance.receive(LINX_SIGNAL(), self.timeout)
+            sig = linxInstance.receive(self.timeout)
             if(sig == None):
                 print "Server: Idle too long, terminating."
                 self.shouldQuit = True
