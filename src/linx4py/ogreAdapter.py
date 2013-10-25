@@ -4,6 +4,8 @@ Created on 23 okt 2013
 @author: Bjorn Arnelid
 
 OgreAdapter is used to work with the ogre workflow, using linx4py.
+There are still several things to do here. The better option is probably to use 
+linx4py instead of pyogre, at least for straight forward linx calls. 
  
 '''
 
