@@ -4,6 +4,7 @@ Created on 15 okt 2013
 @author: Bjorn Arnelid
 '''
 import unittest
+import xmlrunner
 from ctypes import POINTER, c_uint, cast
 
 import server
@@ -278,4 +279,4 @@ class TestCloseWrapper(linxWrapper.LinxWrapper):
     
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()
+    unittest.main(testRunner=xmlrunner.XMLTestRunner(output="unittests"))

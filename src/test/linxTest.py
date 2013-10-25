@@ -4,6 +4,7 @@ Created on 22 okt 2013
 @author: Bjorn Arnelid
 '''
 import unittest
+import xmlrunner
 
 import server
 from linx4py import linx
@@ -57,4 +58,4 @@ class Test(unittest.TestCase):
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()
+    unittest.main(testRunner=xmlrunner.XMLTestRunner(output="unittests"))
