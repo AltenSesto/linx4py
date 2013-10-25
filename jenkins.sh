@@ -4,7 +4,7 @@ python src/test/linxTest.py
 
 pylint --output-format=parseable src/linx4py/*.py | tee pylint_out.txt
 pep8 src/*.py | tee pep8_out.txt
-clonedigger --cpd-output src/*.py -o clonedigger_out.xml
+clonedigger --cpd-output src/linx4py/*.py -o clonedigger_out.xml
 sloccount --duplicates --wide --details src/ > sloccount_out.txt
 pymetrics src/*.py > complexity.txt
 pycabehtml -i complexity.txt -o complexity.html -a complexity_acc.txt -g output.png
