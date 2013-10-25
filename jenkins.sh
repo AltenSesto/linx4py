@@ -1,4 +1,4 @@
-PYTHONPATH = ${PYTHONPATH}:./src/linx4py
+export PYTHONPATH = ${PYTHONPATH}:./src/linx4py
 python src/test/linxAdapterTest.py
 python src/test/linxTest.py
 
