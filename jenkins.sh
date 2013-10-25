@@ -2,7 +2,7 @@ export PYTHONPATH="${PYTHONPATH}:./src"
 python src/test/linxAdapterTest.py
 python src/test/linxTest.py
 
-pylint --output-format=parseable src/*.py | tee pylint_out.txt
+pylint --output-format=parseable src/linx4py/*.py | tee pylint_out.txt
 pep8 src/*.py | tee pep8_out.txt
 clonedigger --cpd-output src/*.py -o clonedigger_out.xml
 sloccount --duplicates --wide --details src/ > sloccount_out.txt
