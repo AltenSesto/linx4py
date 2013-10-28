@@ -51,14 +51,14 @@ class Test(unittest.TestCase):
         senderInstance = self.openLinx("MySenderName")
         serverID = self.findServer(senderInstance, self.server_name)
         receiver = AsyncReceiver(receiverInstance)
-        receiver.addSignalType(0x3341, LINX_SIGNAL)
+        receiver.addSignalType(LINX_SIGNAL)
         receiver.initReceive()
         self.sendSignal(senderInstance, 1, serverID, receiverID)
         # Making sure we would have timed out if not async
         time.sleep(2) 
         signal = receiver.receive()
         receiver.stopReceive()
-        self.assertEqual(0x3341, signal.reply.sig_no)
+        self.assertEqual(0x3341, signal.sig_no)
         
     def testReceiveAsyncEmpty(self):
         receiverInstance = self.openLinx("MyReceiverName")

@@ -33,26 +33,34 @@ class Test(unittest.TestCase):
     def testReceiveSignalID(self):
         linxInstance = linx.Linx("MyClientName")
         serverID = linxInstance.hunt(self.server_name, 1000)
-        linxInstance.addSignalType(0x3341, LINX_SIGNAL)
-        sendSignal = linxInstance.createSignal(0x3340, LINX_SIGNAL)
-        sendSignal.request.seqno = 1
+        linxInstance.addSignalType(LINX_SIGNAL)
+        sendSignal = linxInstance.createSignal(0x3340)
         linxInstance.send(sendSignal, serverID)
         receiveSignal = linxInstance.receive(1000)
         self.assertEquals(receiveSignal.sig_no, 0x3341)
         
+    def testRecieveSignalContent(self):
+        linxInstance = linx.Linx("MyClientName")
+        serverID = linxInstance.hunt(self.server_name, 1000)
+        linxInstance.addSignalType(LINX_SIGNAL)
+        sendSignal = linxInstance.createSignal(0x3340, LINX_SIGNAL)
+        sendSignal.seqno = 1
+        linxInstance.send(sendSignal, serverID)
+        receiveSignal = linxInstance.receive(1000)
+        self.assertEquals(receiveSignal.seqno, 1)
+        
     def testGetSender(self):
         linxInstance = linx.Linx("MyClientName")
         serverID = linxInstance.hunt(self.server_name, 1000)
-        linxInstance.addSignalType(0x3341, LINX_SIGNAL)
+        linxInstance.addSignalType(LINX_SIGNAL)
         sendSignal = linxInstance.createSignal(0x3340, LINX_SIGNAL)
-        sendSignal.request.seqno = 2
         linxInstance.send(sendSignal, serverID)
         receiveSignal = linxInstance.receive(1000)
         self.assertEqual(linxInstance.getSender(receiveSignal), serverID)
         
     def testAddSignal(self):
         linxInstance = linx.Linx("MyClientName")
-        linxInstance.addSignalType(0x3340, LINX_SIGNAL)
+        linxInstance.addSignalType(LINX_SIGNAL)
         self.assertEqual(linxInstance.signalCollection.signals[0x3340], LINX_SIGNAL)
         
 

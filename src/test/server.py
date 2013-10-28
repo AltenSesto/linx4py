@@ -31,7 +31,7 @@ class TestServer(Thread):
     def main(self):
         print "Server started."
         linxInstance = linx.Linx(self.name)
-        linxInstance.addSignalType(0x3340, LINX_SIGNAL)
+        linxInstance.addSignalType(LINX_SIGNAL)
         while(not self.shouldQuit):
             sig = linxInstance.receive(self.timeout)
             if(sig == None):

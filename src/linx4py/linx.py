@@ -75,10 +75,10 @@ class Linx(object):
         sp = self.adapter.receivePointerWTMO(signal, timeout, sigSelection)
         return self.signalCollection.castToCorrect(sp)
         
-    def addSignalType(self, signalID, SignalClass):
+    def addSignalType(self, SignalClass):
         '''
         addSignalType
         Add a signal class to signalCollection, signal can then be collected dynamically 
         by looking at the signalID
         '''
-        self.signalCollection.addSignal(signalID, SignalClass)
+        self.signalCollection.addSignal( SignalClass)

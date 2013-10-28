@@ -48,13 +48,13 @@ class AsyncReceiver(Thread):
             sp = self.adapter.receivePointerWTMO(sig, self.receiveTimeout, self.sigsel)
             self.signals.append(sp)
             
-    def addSignalType(self, signalID, SignalClass):
+    def addSignalType(self, SignalClass):
         '''
         addSignalType
         Add a signal class to signalCollection, signal can then be collected dynamically 
         by looking at the signalID
         '''
-        self.signalCollection.addSignal(signalID, SignalClass)
+        self.signalCollection.addSignal(SignalClass)
     
     def receive(self):
         '''
