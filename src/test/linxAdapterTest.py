@@ -11,7 +11,7 @@ import server
 from signals import LINX_SIGNAL, BASE_SIGNAL
 from linx4py import linxWrapper, linxAdapter
 
-class Test(unittest.TestCase):
+class LinxAdapterTest(unittest.TestCase):
     '''
     Unit tests for linx module in linx4py, requires following:
     Linx2.5.1 installed on current computer

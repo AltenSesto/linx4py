@@ -10,7 +10,7 @@ from linx4py.signalCollection import SignalCollection
 from linx4py.linxAdapter import LinxException
 from signals import LINX_SIGNAL, REQUEST_SIGNAL, REQUEST_SIGNAL_NO, REPLY_SIGNAL_NO
 
-class Test(unittest.TestCase):
+class SignalCollectionTest(unittest.TestCase):
 
     def testAddSignalContainsRequest(self):
         sc = SignalCollection()

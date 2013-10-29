@@ -10,7 +10,7 @@ import server
 from linx4py import linx
 from signals import LINX_SIGNAL, REQUEST_SIGNAL
 
-class Test(unittest.TestCase):
+class LinxTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(self):

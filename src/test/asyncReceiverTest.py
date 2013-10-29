@@ -12,7 +12,7 @@ from signals import LINX_SIGNAL
 from linx4py.asyncReceiver import AsyncReceiver
 import server
 
-class Test(unittest.TestCase):
+class AsyncReceiverTest(unittest.TestCase):
     
     @classmethod
     def setUpClass(self):
