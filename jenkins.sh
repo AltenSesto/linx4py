@@ -12,10 +12,10 @@ pymetrics src/*.py > complexity.txt
 pycabehtml -i complexity.txt -o complexity.html -a complexity_acc.txt -g output.png
 #pyreverse -A -S -o png -p GameOfLife game_of_life/*.py
 
-coverage run src/test/linxAdapterTest.py
-coverage run src/test/linxTest.py
-coverage run src/test/asyncRecieverTest.py
-coverage run src/test/signalCollectionTest.py
+coverage run src/test/linxAdapterTest.py 
+coverage run src/test/linxTest.py -a
+coverage run src/test/asyncReceiverTest.py -a
+coverage run src/test/signalCollectionTest.py -a
 coverage xml
 
 doxygen Doxyfile
