@@ -184,7 +184,7 @@ class LinxException(Exception):
     Standard exception thrown by linx
     '''
     def __init__(self, value):
-        super(Exception, self).__init__()
+        super(LinxException, self).__init__()
         self.value = value
 
     def __str__(self):
