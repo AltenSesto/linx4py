@@ -15,10 +15,10 @@ class SignalCollectionTest(unittest.TestCase):
 
     def testAddUnionContainsRequest(self):
         sc = SignalCollection()
-        request = REQUEST_SIGNAL()
         sc.addUnion(LINX_SIGNAL)
-        signal = sc.createSignal(REQUEST_SIGNAL_NO)
-        self.assertEqual(request.sig_no, 0x3340)
+        request = REQUEST_SIGNAL()
+        sp = pointer(request)
+        signal = sc.castToCorrect(sp)
         self.assertEqual(request.sig_no, signal.sig_no)
         
     def testSignalCollectionAlwaysContainHunt(self):

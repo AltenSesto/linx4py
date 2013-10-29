@@ -6,7 +6,7 @@ Created on 22 okt 2013
 from ctypes import memmove, addressof, sizeof, c_uint
 from linxAdapter import LinxAdapter
 from linxWrapper import BaseSignal
-from linxConstants import LINX_OS_HUNT_SIG_SEL, LINX_NO_SIG_SEL
+from linxConstants import LINX_OS_HUNT_SIG_SEL
 from signalCollection import SignalCollection
 
 class Linx(object):
