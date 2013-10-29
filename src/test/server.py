@@ -39,7 +39,7 @@ class TestServer(Thread):
                 self.shouldQuit = True
             elif(sig.sig_no == 0x3340):
                 print "Server: REQUEST_SIG received."
-                clientID = linxInstance.adapter.findSender(sig)
+                clientID = linxInstance.getSender(sig)
                 print "Server: Sending REPLY_SIG."
                 sendSignal = REPLY_SIGNAL()
                 sendSignal.seqno = sig.seqno

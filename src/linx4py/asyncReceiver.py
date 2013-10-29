@@ -54,7 +54,7 @@ class AsyncReceiver(Thread):
         Add a signal class to signalCollection, signal can then be collected dynamically 
         by looking at the signalID
         '''
-        self.signalCollection.addSignals(SignalClass)
+        self.signalCollection.addUnion(SignalClass)
     
     def receive(self):
         '''
