@@ -11,7 +11,7 @@ from signalCollection import SignalCollection
 
 class Linx(object):
     '''
-    Class for communicating with other systems through Linx signals. 
+    Class for communicating with other systems through Linx signals.
     '''
 
     def __init__(self, name):
@@ -22,7 +22,7 @@ class Linx(object):
         self.adapter = LinxAdapter()
         self.adapter.open(name, 0, None)
         self.signalCollection = SignalCollection()
-        
+
     def __del__(self):
         '''
         Destructor
@@ -32,7 +32,7 @@ class Linx(object):
             self.adapter.close()
         self.adapter = None
         self.signalCollection = None
-        
+
     def hunt(self, name, timeout):
         '''
         findServer
@@ -42,7 +42,7 @@ class Linx(object):
         huntSig = LINX_OS_HUNT_SIG_SEL
         signal = self.adapter.receiveWTMO(BaseSignal(), timeout, huntSig)
         return self.adapter.findSender(signal)
-    
+
     def send(self, signal, targetID, senderID = None):
         '''
         send
@@ -60,8 +60,7 @@ class Linx(object):
         Gets sender ID from signal
         '''
         return self.adapter.findSender(signal)
-    
-    
+
     def receive(self, timeout = None, sigSelection = None):
         '''
         receive
@@ -73,11 +72,11 @@ class Linx(object):
             sigSelection = SigSelectArray(*sigSelection)
         sp = self.adapter.receivePointerWTMO(signal, timeout, sigSelection)
         return self.signalCollection.castToCorrect(sp)
-        
+
     def addUnionType(self, SignalClass):
         '''
         addSignalType
-        Add a signal class to signalCollection, signal can then be collected dynamically 
+        Add a signal class to signalCollection, signal can then be collected dynamically
         by looking at the signalID
         '''
         self.signalCollection.addUnion( SignalClass)
