@@ -3,7 +3,7 @@ Created on 22 okt 2013
 
 @author: Bjorn Arnelid
 '''
-from ctypes import memmove, addressof, sizeof
+from ctypes import memmove, addressof, sizeof, c_uint
 from linxAdapter import LinxAdapter
 from linxWrapper import BaseSignal
 from linxConstants import LINX_OS_HUNT_SIG_SEL, LINX_NO_SIG_SEL
@@ -62,12 +62,15 @@ class Linx(object):
         return self.adapter.findSender(signal)
     
     
-    def receive(self, timeout = None, sigSelection = LINX_NO_SIG_SEL):
+    def receive(self, timeout = None, sigSelection = None):
         '''
         receive
         Receives signal from server within timeout
         '''
         signal = BaseSignal()
+        if not sigSelection == None:
+            SigSelectArray = c_uint * len(sigSelection)
+            sigSelection = SigSelectArray(*sigSelection)
         sp = self.adapter.receivePointerWTMO(signal, timeout, sigSelection)
         return self.signalCollection.castToCorrect(sp)
         

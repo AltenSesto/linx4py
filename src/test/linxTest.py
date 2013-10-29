@@ -49,6 +49,16 @@ class LinxTest(unittest.TestCase):
         receiveSignal = linxInstance.receive(1000)
         self.assertEquals(receiveSignal.seqno, 1)
         
+    def testReceiveWithFilter(self):
+        linxInstance = linx.Linx("MyClientName")
+        serverID = linxInstance.hunt(self.server_name, 1000)
+        linxInstance.addUnionType(LINX_SIGNAL)
+        sendSignal = REQUEST_SIGNAL()
+        sendSignal.seqno = 2
+        linxInstance.send(sendSignal, serverID)
+        receiveSignal = linxInstance.receive(1000, [1, 0x3341])
+        self.assertEquals(receiveSignal.seqno, 2)
+        
     def testGetSender(self):
         linxInstance = linx.Linx("MyClientName")
         serverID = linxInstance.hunt(self.server_name, 1000)
@@ -62,7 +72,8 @@ class LinxTest(unittest.TestCase):
         linxInstance = linx.Linx("MyClientName")
         linxInstance.addUnionType(LINX_SIGNAL)
         self.assertEqual(linxInstance.signalCollection.signals[0x3340], LINX_SIGNAL)
-        
+
+
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
