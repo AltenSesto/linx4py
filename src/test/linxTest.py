@@ -8,7 +8,7 @@ import xmlrunner
 
 import server
 from linx4py import linx
-from signals import LINX_SIGNAL
+from signals import LINX_SIGNAL, REQUEST_SIGNAL
 
 class Test(unittest.TestCase):
 
@@ -43,8 +43,8 @@ class Test(unittest.TestCase):
         linxInstance = linx.Linx("MyClientName")
         serverID = linxInstance.hunt(self.server_name, 1000)
         linxInstance.addSignalType(LINX_SIGNAL)
-        sendSignal = linxInstance.createSignal(0x3340, LINX_SIGNAL)
-        sendSignal.request.seqno = 1
+        sendSignal = REQUEST_SIGNAL()
+        sendSignal.seqno = 1
         linxInstance.send(sendSignal, serverID)
         receiveSignal = linxInstance.receive(1000)
         self.assertEquals(receiveSignal.seqno, 1)

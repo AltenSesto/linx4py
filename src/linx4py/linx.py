@@ -56,6 +56,7 @@ class Linx(object):
         send
         Sends signal toID server, The signal is consumed and cannot be used again after send
         '''
+        # we need to create a union allocate a signal and copy union to allocated memory
         self.adapter.send(signal, targetID, senderID)
 
     def getSender(self, signal):
