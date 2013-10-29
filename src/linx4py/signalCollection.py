@@ -20,15 +20,22 @@ class SignalCollection(object):
             SignalClass = self.signals[sig_no]
             casted = cast(pointer, POINTER(SignalClass))
             signal = casted.contents
+            name = self.getSignalReferenceName(signal, sig_no)
+            return getattr(signal, name)
+        except KeyError:
+            raise LinxException("Signal %d must be in collection" % sig_no)
+        
+    def getSignalReferenceName(self, signal, sigNo):
+        try:
             for name, value in signal._fields_:
                 if not name == 'sig_no':
                     ref = self.sigTable[value]
-                    if ref == sig_no:
-                        return getattr(signal, name)
+                    if ref == sigNo:
+                        return name
         except KeyError:
-            raise LinxException("Signal must be in collection")
+            raise LinxException("Signal %d must be in collection" % sigNo)
     
-    def addSignal(self, SignalClass):
+    def addSignals(self, SignalClass):
         for name, Value in SignalClass._fields_:
             if not name == 'sig_no':
                 signal = Value()
@@ -42,4 +49,11 @@ class SignalCollection(object):
         sig = Cls()
         sig.sig_no = sig_no
         return sig
-            
+    
+    def createUnionfromSignal(self, signal):
+        sigNo = signal.sig_no
+        Cls = self.signals[sigNo]
+        returnSignal = Cls()
+        name = self.getSignalReferenceName(returnSignal, sigNo)
+        setattr(returnSignal, name, signal)
+        return returnSignal

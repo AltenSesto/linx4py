@@ -4,6 +4,7 @@ Created on 28 okt 2013
 @author: bjorn
 '''
 import unittest
+import xmlrunner
 from ctypes import pointer
 
 from linx4py.signalCollection import SignalCollection
@@ -15,14 +16,14 @@ class SignalCollectionTest(unittest.TestCase):
     def testAddSignalContainsRequest(self):
         sc = SignalCollection()
         request = REQUEST_SIGNAL()
-        sc.addSignal(LINX_SIGNAL)
+        sc.addSignals(LINX_SIGNAL)
         signal = sc.createSignal(REQUEST_SIGNAL_NO)
         self.assertEqual(request.sig_no, 0x3340)
         self.assertEqual(request.sig_no, signal.sig_no)
 
     def testCastToCorrectSignal(self):
         sc = SignalCollection()
-        sc.addSignal(LINX_SIGNAL)
+        sc.addSignals(LINX_SIGNAL)
         sig = LINX_SIGNAL()
         sig.sig_no = REPLY_SIGNAL_NO
         sig.reply.seqno = 1
@@ -38,7 +39,22 @@ class SignalCollectionTest(unittest.TestCase):
         sig.sig_no = 55
         sp = pointer(sig)
         self.failUnlessRaises(LinxException, sc.castToCorrect, sp)
+        
+    def testCreateUnionFromSignalReturnsUnion(self):
+        sc = SignalCollection()
+        sc.addSignals(LINX_SIGNAL)
+        inSignal = REQUEST_SIGNAL()
+        outSignal = sc.createUnionfromSignal(inSignal)
+        self.assertEqual(inSignal.sig_no, outSignal.sig_no)
+        
+    def testCreateUnionFromSignalReturnsCorrectData(self):
+        sc = SignalCollection()
+        sc.addSignals(LINX_SIGNAL)
+        inSignal = REQUEST_SIGNAL()
+        inSignal.seqno = 2
+        outSignal = sc.createUnionfromSignal(inSignal)
+        self.assertEqual(inSignal.seqno, outSignal.request.seqno)
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()
+    unittest.main(testRunner=xmlrunner.XMLTestRunner(output="unittests"))

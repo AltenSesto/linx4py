@@ -124,6 +124,7 @@ class LinxAdapter(object):
         alloc
         Method to allocate buffer space for signal to send
         '''
+        # TODO We shouldnt accept a signal, that is not intuitive
         self.wrapper.setSignalClass(signal.__class__)
         sp = self.wrapper.linx_alloc(self.instance, sizeof(signal), signal.sig_no)
         if(not sp):

@@ -5,6 +5,7 @@ Created on 24 okt 2013
 '''
 import unittest
 import time
+import xmlrunner
 from ctypes import c_uint
 
 from linx4py.linxAdapter import LinxAdapter
@@ -51,7 +52,7 @@ class AsyncReceiverTest(unittest.TestCase):
         senderInstance = self.openLinx("MySenderName")
         serverID = self.findServer(senderInstance, self.server_name)
         receiver = AsyncReceiver(receiverInstance)
-        receiver.addSignalType(LINX_SIGNAL)
+        receiver.addUnionType(LINX_SIGNAL)
         receiver.initReceive()
         self.sendSignal(senderInstance, 1, serverID, receiverID)
         # Making sure we would have timed out if not async
@@ -70,4 +71,4 @@ class AsyncReceiverTest(unittest.TestCase):
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testReceiveSignal']
-    unittest.main()
+    unittest.main(testRunner=xmlrunner.XMLTestRunner(output="unittests"))

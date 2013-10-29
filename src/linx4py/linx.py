@@ -3,7 +3,7 @@ Created on 22 okt 2013
 
 @author: Bjorn Arnelid
 '''
-
+from ctypes import memmove, addressof, sizeof
 from linxAdapter import LinxAdapter
 from linxWrapper import BaseSignal
 from linxConstants import LINX_OS_HUNT_SIG_SEL, LINX_NO_SIG_SEL
@@ -42,22 +42,17 @@ class Linx(object):
         huntSig = LINX_OS_HUNT_SIG_SEL
         signal = self.adapter.receiveWTMO(BaseSignal(), timeout, huntSig)
         return self.adapter.findSender(signal)
-        
-    def createSignal(self, sigNo, signalClass = None):
-        '''
-        createSignal
-        Allocates signal buffer in linx and adds signal to collection if needed
-        '''
-        sig = self.signalCollection.createSignal(sigNo, signalClass)
-        return self.adapter.alloc(sig)
     
     def send(self, signal, targetID, senderID = None):
         '''
         send
         Sends signal toID server, The signal is consumed and cannot be used again after send
         '''
-        # we need to create a union allocate a signal and copy union to allocated memory
-        self.adapter.send(signal, targetID, senderID)
+        signalUnion = self.signalCollection.createUnionfromSignal(signal)
+        sendUnion = self.adapter.alloc(signalUnion)
+        bufferSize = min(sizeof(signalUnion), sizeof(sendUnion))
+        memmove(addressof(sendUnion), addressof(signalUnion), bufferSize)
+        self.adapter.send(sendUnion, targetID, senderID)
 
     def getSender(self, signal):
         '''
@@ -76,10 +71,10 @@ class Linx(object):
         sp = self.adapter.receivePointerWTMO(signal, timeout, sigSelection)
         return self.signalCollection.castToCorrect(sp)
         
-    def addSignalType(self, SignalClass):
+    def addUnionType(self, SignalClass):
         '''
         addSignalType
         Add a signal class to signalCollection, signal can then be collected dynamically 
         by looking at the signalID
         '''
-        self.signalCollection.addSignal( SignalClass)
+        self.signalCollection.addSignals( SignalClass)

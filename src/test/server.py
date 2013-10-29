@@ -6,7 +6,7 @@ Created on 23 okt 2013
 from threading import Thread
 
 from linx4py import linx
-from signals import LINX_SIGNAL
+from signals import LINX_SIGNAL, REPLY_SIGNAL
 
 server = None
 
@@ -31,7 +31,7 @@ class TestServer(Thread):
     def main(self):
         print "Server started."
         linxInstance = linx.Linx(self.name)
-        linxInstance.addSignalType(LINX_SIGNAL)
+        linxInstance.addUnionType(LINX_SIGNAL)
         while(not self.shouldQuit):
             sig = linxInstance.receive(self.timeout)
             if(sig == None):
@@ -41,8 +41,9 @@ class TestServer(Thread):
                 print "Server: REQUEST_SIG received."
                 clientID = linxInstance.adapter.findSender(sig)
                 print "Server: Sending REPLY_SIG."
-                sig.sig_no = 0x3341
-                linxInstance.send(sig, clientID)
+                sendSignal = REPLY_SIGNAL()
+                sendSignal.seqno = sig.seqno
+                linxInstance.send(sendSignal, clientID)
             else:
                 print "Server: Unexpected signal received (sig_no = %d) - ignored" % sig.sig_no
                 linxInstance.adapter.free(sig)
