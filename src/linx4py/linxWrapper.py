@@ -101,20 +101,20 @@ class LinxWrapper(object):
         '''
         linx_send_w_opt = self.liblinx.linx_send_w_opt
         linx_send_w_opt.argtypes = [POINTER(LINX), POINTER(POINTER(self.signalClass)),
-                                    c_uint, c_uint, POINTER(c_uint)]
+                                    c_uint, c_uint, POINTER(c_int)]
         return linx_send_w_opt(linx, sig, fromID, toID, taglist)
 
-    def linx_sigattr(self, linx, sig, attr, value):
-        '''
-        linx_sigattr
-        Matches linx function:
-        int linx_sigattr(const LINX *linx, const union LINX_SIGNAL **sig, uint32_t attr,
-                        void **value);
-        '''
-        linx_sigattr = self.liblinx.linx_sigattr
-        linx_sigattr.argtypes = [POINTER(LINX), POINTER(POINTER(self.signalClass)),
-                                 POINTER(c_uint), c_void_p]
-        return linx_sigattr(linx, sig, attr, value)
+#     def linx_sigattr(self, linx, sig, attr, value):
+#         '''
+#         linx_sigattr
+#         Matches linx function:
+#         int linx_sigattr(const LINX *linx, const union LINX_SIGNAL **sig, uint32_t attr,
+#                         void **value);
+#         '''
+#         linx_sigattr = self.liblinx.linx_sigattr
+#         linx_sigattr.argtypes = [POINTER(LINX), POINTER(POINTER(self.signalClass)),
+#                                  c_uint]
+#         return linx_sigattr(linx, sig, attr, value)
 
     def linx_receive(self, linx, sig, sig_sel):
         '''
@@ -139,8 +139,8 @@ class LinxWrapper(object):
                                        c_uint, POINTER(c_uint)]
         return linx_receive_w_tmo(linx, sig, tmo, sig_sel)
 
-    def linx_receive_from(self, linx, sig, tmo, sig_sel, fromID):
-        pass
+#     def linx_receive_from(self, linx, sig, tmo, sig_sel, fromID):
+#         pass
 
     def linx_sender(self, linx, sig):
         '''
@@ -206,6 +206,19 @@ LINK._fields_ = [("next", POINTER(LINK)),
                  ("prev", POINTER(LINK))
                  ]
 
+class linx_sndrcv_param(Structure):
+    _fields_ = [("from", c_uint),
+                ("to", c_uint),
+                ]
+#                 ()
+#     __u32 size;           /* Size of the signal */
+#     __u32 sig_attr;       /* Signal attributes */
+#     __u32 sigselect_size; /* Size of sigselect buffer */
+#     __u32 tmo;            /* Timeout value */
+#     __u64 sigselect;      /* Pointer to array of sigselect numbers */
+#     __u64 buffer;         /* Pointer to the payload */
+#     __u64 real_buf;       /* Pointer to real payload, used in threads */
+
 class LINXSigAdm(Structure):
     pass
 
@@ -216,7 +229,11 @@ class LINX(Structure):
                 ("spid", c_uint),
                 ("free_buffer", POINTER(LINXSigAdm))
                 ]
-
+LINXSigAdm._fields_ = [("link", LINK),
+                ("owner", POINTER(LINX)),
+                ("true_size", c_int),
+                ("sndrcv", linx_sndrcv_param)
+                ]
 class BaseSignal(Structure):
     _fields_ = [("sig_no", c_uint),
                  ]
