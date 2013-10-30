@@ -1,4 +1,5 @@
 export PYTHONPATH="${PYTHONPATH}:./src"
+python src/test/linxWrapperTest.py
 python src/test/linxAdapterTest.py
 python src/test/linxTest.py
 python src/test/asyncRecieverTest.py
@@ -12,7 +13,8 @@ pymetrics src/*.py > complexity.txt
 pycabehtml -i complexity.txt -o complexity.html -a complexity_acc.txt -g output.png
 #pyreverse -A -S -o png -p GameOfLife game_of_life/*.py
 
-coverage run src/test/linxAdapterTest.py 
+coverage run src/test/linxWrapperTest.py 
+coverage run -a src/test/linxAdapterTest.py 
 coverage run -a src/test/linxTest.py 
 coverage run -a src/test/asyncReceiverTest.py 
 coverage run -a src/test/signalCollectionTest.py 
