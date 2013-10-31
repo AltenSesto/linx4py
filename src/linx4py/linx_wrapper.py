@@ -1,19 +1,27 @@
 '''
+This module is a thin wrapper for calling Linx API
+
+Classes: 
+LinxWrapper - Used to call Linx API from python.
+LINX - Data structure representing a Linx object in liblinx.so
+
 Created on 17 okt 2013
 
 @author: Bjorn Arnelid
 '''
-
 from ctypes import CDLL, POINTER, Structure, c_uint, c_int, c_char_p, c_void_p, c_longlong
 
 from linx_constants import BaseSignal
 
 class LinxWrapper(object):
+    
     '''
-    LinxWrapper
-    Linxwrapper mirrors linx.h directly making the function calls as similar as possible
+    Represent liblinx.so mirroring the Linx API as closely as possible
+    
+    Mirrors linx.h as closely as possible. The user must have Linx 2.5.1 installed
+    and kernel modules loaded in order to use this Class. For more Information on
+    how to install Linx see http://sourceforge.net/projects/linx/
     '''
-
 
     def __init__(self):
         '''
