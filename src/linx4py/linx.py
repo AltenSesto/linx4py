@@ -4,10 +4,10 @@ Created on 22 okt 2013
 @author: Bjorn Arnelid
 '''
 from ctypes import memmove, addressof, sizeof, c_uint
-from linxAdapter import LinxAdapter
-from linxWrapper import BaseSignal
-from linxConstants import LINX_OS_HUNT_SIG_SEL
-from signalCollection import SignalCollection
+from linx_adapter import LinxAdapter
+from linx_wrapper import BaseSignal
+from linx_constants import LINX_OS_HUNT_SIG_SEL
+from signal_collection import SignalCollection
 
 class Linx(object):
     '''
@@ -21,7 +21,7 @@ class Linx(object):
         '''
         self.adapter = LinxAdapter()
         self.adapter.open(name, 0, None)
-        self.signalCollection = SignalCollection()
+        self.signal_collection = SignalCollection()
 
     def __del__(self):
         '''
@@ -31,7 +31,7 @@ class Linx(object):
         if(not self.adapter.instance == None):
             self.adapter.close()
         self.adapter = None
-        self.signalCollection = None
+        self.signal_collection = None
 
     def hunt(self, name, timeout):
         '''
@@ -39,44 +39,44 @@ class Linx(object):
         Hunts for server with name and returns serverID
         '''
         self.adapter.hunt(name, None)
-        huntSig = LINX_OS_HUNT_SIG_SEL
-        signal = self.adapter.receiveWTMO(BaseSignal(), timeout, huntSig)
-        return self.adapter.findSender(signal)
+        hunt_sig = LINX_OS_HUNT_SIG_SEL
+        signal = self.adapter.receive_w_tmo(BaseSignal(), timeout, hunt_sig)
+        return self.adapter.find_sender(signal)
 
-    def send(self, signal, targetID, senderID = None):
+    def send(self, signal, target_id, sender_id=None):
         '''
         send
-        Sends signal toID server, The signal is consumed and cannot be used again after send
+        Sends signal to_id server, The signal is consumed and cannot be used again after send
         '''
-        signalUnion = self.signalCollection.createUnionfromSignal(signal)
-        sendUnion = self.adapter.alloc(signalUnion)
-        bufferSize = min(sizeof(signalUnion), sizeof(sendUnion))
-        memmove(addressof(sendUnion), addressof(signalUnion), bufferSize)
-        self.adapter.send(sendUnion, targetID, senderID)
+        signal_union = self.signal_collection.create_union_from_signal(signal)
+        send_union = self.adapter.alloc(signal_union)
+        buffer_size = min(sizeof(signal_union), sizeof(send_union))
+        memmove(addressof(send_union), addressof(signal_union), buffer_size)
+        self.adapter.send(send_union, target_id, sender_id)
 
-    def getSender(self, signal):
+    def get_sender(self, signal):
         '''
-        getSender
+        get_sender
         Gets sender ID from signal
         '''
-        return self.adapter.findSender(signal)
+        return self.adapter.find_sender(signal)
 
-    def receive(self, timeout = None, sigSelection = None):
+    def receive(self, timeout=None, sig_selection=None):
         '''
         receive
         Receives signal from server within timeout
         '''
         signal = BaseSignal()
-        if not sigSelection == None:
-            SigSelectArray = c_uint * len(sigSelection)
-            sigSelection = SigSelectArray(*sigSelection)
-        sp = self.adapter.receivePointerWTMO(signal, timeout, sigSelection)
-        return self.signalCollection.castToCorrect(sp)
+        if not sig_selection == None:
+            SigSelectArray = c_uint * len(sig_selection)
+            sig_selection = SigSelectArray(*sig_selection)
+        sp = self.adapter.receive_pointer_w_tmo(signal, timeout, sig_selection)
+        return self.signal_collection.cast_to_correct(sp)
 
-    def addUnionType(self, SignalClass):
+    def add_union_type(self, SignalClass):
         '''
         addSignalType
-        Add a signal class to signalCollection, signal can then be collected dynamically
+        Add a signal class to signal_collection, signal can then be collected dynamically
         by looking at the signalID
         '''
-        self.signalCollection.addUnion( SignalClass)
+        self.signal_collection.add_union( SignalClass)

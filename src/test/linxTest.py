@@ -33,7 +33,7 @@ class LinxTest(unittest.TestCase):
     def testReceiveSignalID(self):
         linxInstance = linx.Linx("MyClientName")
         serverID = linxInstance.hunt(self.server_name, 1000)
-        linxInstance.addUnionType(LINX_SIGNAL)
+        linxInstance.add_union_type(LINX_SIGNAL)
         sendSignal = REQUEST_SIGNAL()
         linxInstance.send(sendSignal, serverID)
         receiveSignal = linxInstance.receive(1000)
@@ -42,7 +42,7 @@ class LinxTest(unittest.TestCase):
     def testRecieveSignalContent(self):
         linxInstance = linx.Linx("MyClientName")
         serverID = linxInstance.hunt(self.server_name, 1000)
-        linxInstance.addUnionType(LINX_SIGNAL)
+        linxInstance.add_union_type(LINX_SIGNAL)
         sendSignal = REQUEST_SIGNAL()
         sendSignal.seqno = 1
         linxInstance.send(sendSignal, serverID)
@@ -52,7 +52,7 @@ class LinxTest(unittest.TestCase):
     def testReceiveWithFilter(self):
         linxInstance = linx.Linx("MyClientName")
         serverID = linxInstance.hunt(self.server_name, 1000)
-        linxInstance.addUnionType(LINX_SIGNAL)
+        linxInstance.add_union_type(LINX_SIGNAL)
         sendSignal = REQUEST_SIGNAL()
         sendSignal.seqno = 2
         linxInstance.send(sendSignal, serverID)
@@ -62,16 +62,16 @@ class LinxTest(unittest.TestCase):
     def testGetSender(self):
         linxInstance = linx.Linx("MyClientName")
         serverID = linxInstance.hunt(self.server_name, 1000)
-        linxInstance.addUnionType(LINX_SIGNAL)
+        linxInstance.add_union_type(LINX_SIGNAL)
         sendSignal = REQUEST_SIGNAL()
         linxInstance.send(sendSignal, serverID)
         receiveSignal = linxInstance.receive(1000)
-        self.assertEqual(linxInstance.getSender(receiveSignal), serverID)
+        self.assertEqual(linxInstance.get_sender(receiveSignal), serverID)
         
     def testAddSignal(self):
         linxInstance = linx.Linx("MyClientName")
-        linxInstance.addUnionType(LINX_SIGNAL)
-        self.assertEqual(linxInstance.signalCollection.signals[0x3340], LINX_SIGNAL)
+        linxInstance.add_union_type(LINX_SIGNAL)
+        self.assertEqual(linxInstance.signal_collection._signals[0x3340], LINX_SIGNAL)
 
 
 

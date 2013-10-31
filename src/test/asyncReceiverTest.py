@@ -8,9 +8,11 @@ import time
 import xmlrunner
 from ctypes import c_uint
 
-from linx4py.linxAdapter import LinxAdapter
+from linx4py.linx_adapter import LinxAdapter
+from linx4py.async_receiver import AsyncReceiver
+
 from signals import LINX_SIGNAL
-from linx4py.asyncReceiver import AsyncReceiver
+
 import server
 
 class AsyncReceiverTest(unittest.TestCase):
@@ -36,8 +38,8 @@ class AsyncReceiverTest(unittest.TestCase):
     def findServer(self, linxInstance, name):
         linxInstance.hunt(name, None)
         hunt = self.getHuntSignal()
-        signal = linxInstance.receiveWTMO(LINX_SIGNAL(), 10000, hunt)
-        return linxInstance.findSender(signal)
+        signal = linxInstance.receive_w_tmo(LINX_SIGNAL(), 10000, hunt)
+        return linxInstance.find_sender(signal)
 
     def sendSignal(self, linxInstance, signalNo, serverID, receiverID):
         s = LINX_SIGNAL()
@@ -48,12 +50,12 @@ class AsyncReceiverTest(unittest.TestCase):
     
     def testReceiveSignalAsync(self):
         receiverInstance = self.openLinx("MyReceiverName")
-        receiverID = receiverInstance.getSPID()
+        receiverID = receiverInstance.get_spid()
         senderInstance = self.openLinx("MySenderName")
         serverID = self.findServer(senderInstance, self.server_name)
         receiver = AsyncReceiver(receiverInstance)
-        receiver.addUnionType(LINX_SIGNAL)
-        receiver.initReceive()
+        receiver.add_union_type(LINX_SIGNAL)
+        receiver.init_receive()
         self.sendSignal(senderInstance, 1, serverID, receiverID)
         # Making sure we would have timed out if not async
         time.sleep(2) 
@@ -64,7 +66,7 @@ class AsyncReceiverTest(unittest.TestCase):
     def testReceiveAsyncEmpty(self):
         receiverInstance = self.openLinx("MyReceiverName")
         receiver = AsyncReceiver(receiverInstance)
-        receiver.initReceive()
+        receiver.init_receive()
         signal = receiver.receive()
         receiver.stopReceive()
         self.assertIsNone(signal, "signal should be None when que is empty")

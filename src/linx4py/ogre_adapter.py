@@ -44,7 +44,7 @@ class Linx(object):
         >>> gw.close()
         gw.close()
     '''
-    linxInstance = None
+    linx_instance = None
 
     def __init__(self,name):
         '''
@@ -76,7 +76,7 @@ class Linx(object):
         """
         Return the endpoint proxy pid.
         """
-        return self.adapter.getSPID()
+        return self.adapter.get_spid()
     
     def hunt(self, name, hunt_sig = None):
         """
@@ -133,11 +133,11 @@ class Linx(object):
     
     def send(self, sig, pid, sender = None):
         """
-        Send an OSE signal toID the specified process.
+        Send an OSE signal to_id the specified process.
 
         Parameters:
-            sig    -- the signal toID send
-            pid    -- the pid of the process the signal will be sent toID
+            sig    -- the signal to_id send
+            pid    -- the pid of the process the signal will be sent to_id
             sender -- the pid of the process specified as sender, default None
 
         Usage:
@@ -167,7 +167,7 @@ class Linx(object):
             mysignal = gw.receive(timeout=1000) # wait max 1 second
         """
         sig = BASIC_LINX_SIGNAL()
-        sp = self.adapter.receivePointerWTMO(sig, timeout, sig_sel)
+        sp = self.adapter.receive_pointer_w_tmo(sig, timeout, sig_sel)
         # Fix this using signal collection 
         #signal = signalAdapter.castToCorrect(sp)
         return sp
