@@ -14,6 +14,7 @@ class LinxWrapper(object):
     Linxwrapper mirrors linx.h directly making the function calls as similar as possible
     '''
 
+
     def __init__(self):
         '''
         Constructor
@@ -173,14 +174,16 @@ class LinxWrapper(object):
         linx_sigsize.argtypes = [POINTER(LINX), POINTER(POINTER(self.SignalClass))]
         return linx_sigsize(linx, sig)
 
-#     def linx_set_sigsize(self):
-#         '''
-#         linx_set_sigsize
-#         Matches linx function:
-#         int linx_set_sigsize(LINX * linx, union LINX_SIGNAL **sig, LINX_OSBUFSIZE sigsize);
-#         '''
-#         linx_set_sigsize = self.liblinx.linx_set_sigsize
-        
+    def linx_set_sigsize(self, linx, sig, sigsize):
+        '''
+        linx_set_sigsize
+        Matches linx function:
+        int linx_set_sigsize(LINX * linx, union LINX_SIGNAL **sig, LINX_OSBUFSIZE sigsize);
+        '''
+        linx_set_sigsize = self.liblinx.linx_set_sigsize
+        linx_set_sigsize.argtypes = [POINTER(LINX), POINTER(POINTER(self.SignalClass)),
+                                     c_int]
+        return linx_set_sigsize(linx, sig, sigsize)
 
     def linx_hunt(self, linx, name, hunt_sig):
         '''
@@ -231,10 +234,10 @@ class LinxWrapper(object):
 
 class LINK(Structure):
     pass
- 
 LINK._fields_ = [("next", POINTER(LINK)),
                  ("prev", POINTER(LINK))
                  ]
+
 
 class linx_sndrcv_param(Structure):
     _fields_ = [("from", c_uint),
@@ -248,8 +251,10 @@ class linx_sndrcv_param(Structure):
                 ("real_buf", c_longlong)
                 ]
 
+
 class LINXSigAdm(Structure):
     pass
+
 
 class LINX(Structure):
     _fields_ = [("owned_sig", LINK),
@@ -258,6 +263,8 @@ class LINX(Structure):
                 ("spid", c_uint),
                 ("free_buffer", POINTER(LINXSigAdm))
                 ]
+
+
 LINXSigAdm._fields_ = [("link", LINK),
                 ("owner", POINTER(LINX)),
                 ("true_size", c_int),

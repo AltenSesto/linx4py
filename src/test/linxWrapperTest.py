@@ -71,8 +71,7 @@ class LinxWrapperTest(unittest.TestCase):
         wrapper.linx_hunt(linx, self.server_name, None)
         sp = pointer(pointer(BaseSignal()))
         wrapper.set_signal_class(BaseSignal)
-        wrapper.linx_receive_w_tmo(linx, sp,
-                                          1000, LINX_OS_HUNT_SIG_SEL)
+        wrapper.linx_receive_w_tmo(linx, sp, 1000, LINX_OS_HUNT_SIG_SEL)
         return wrapper.linx_sender(linx, sp)
 
     def testLinxSend(self):
@@ -164,13 +163,17 @@ class LinxWrapperTest(unittest.TestCase):
         sig = self.createRequestSignal(linx, wrapper)
         self.assertEqual(wrapper.linx_sigsize(linx, sig), sizeof(sig))
 
-#     def testLinxSetSigsize(self):
-#         wrapper = LinxWrapper()
-#         linx = self.openLinx(wrapper)
-#         sig = self.createRequestSignal(linx, wrapper)
-#         wrapper.linx_set_sigsize()
-#         self.assertEqual(wrapper.linx_sigsize(linx, sig), sizeof(sig) + 4)
+    def testLinxSetSigsize(self):
+        wrapper = LinxWrapper()
+        linx = self.openLinx(wrapper)
+        sig = self.createRequestSignal(linx, wrapper)
+        wrapper.linx_set_sigsize(linx, sig, sizeof(sig)+4)
+        self.assertEqual(wrapper.linx_sigsize(linx, sig), sizeof(sig) + 4)
 
+    def testLinxHunt(self):
+        wrapper = LinxWrapper()
+        linx = self.openLinx(wrapper)
+        self.assertEqual(wrapper.linx_hunt(linx, self.server_name, None), 0)
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
