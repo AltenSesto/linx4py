@@ -20,7 +20,7 @@ class AsyncReceiverTest(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         self.server_name = "example_server"
-        self.process = server.getServer(self.server_name)
+        self.process = server.get_server(self.server_name)
         
     @classmethod
     def tearDownClass(self):

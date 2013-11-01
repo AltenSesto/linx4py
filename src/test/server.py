@@ -60,7 +60,7 @@ class TestServer(Thread):
                 linx_instance.adapter.free(sig)
         print "Server: Stopping, goodbye!"
 
-def getServer(name):
+def get_server(name):
     global server
     if(server == None):
         server = TestServer(name)
@@ -70,4 +70,4 @@ def getServer(name):
     return server
 
 if __name__ == '__main__':
-    server = getServer("example_server")
+    server = get_server("example_server")
