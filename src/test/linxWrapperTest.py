@@ -161,14 +161,14 @@ class LinxWrapperTest(unittest.TestCase):
         wrapper = LinxWrapper()
         linx = self.openLinx(wrapper)
         sig = self.createRequestSignal(linx, wrapper)
-        self.assertEqual(wrapper.linx_sigsize(linx, sig), sizeof(sig))
+        self.assertEqual(wrapper.linx_sigsize(linx, sig), sizeof(sig.contents))
 
     def testLinxSetSigsize(self):
         wrapper = LinxWrapper()
         linx = self.openLinx(wrapper)
         sig = self.createRequestSignal(linx, wrapper)
         wrapper.linx_set_sigsize(linx, sig, sizeof(sig)+4)
-        self.assertEqual(wrapper.linx_sigsize(linx, sig), sizeof(sig) + 4)
+        self.assertEqual(wrapper.linx_sigsize(linx, sig), sizeof(sig.contents) + 4)
 
     def testLinxHunt(self):
         wrapper = LinxWrapper()

@@ -16,16 +16,18 @@ from linx_constants import BaseSignal
 class LinxWrapper(object):
     
     '''
-    Represent liblinx.so mirroring the Linx API as closely as possible
+    Represent liblinx.so mirroring the Linx API as closely as possible.
     
     Mirrors linx.h as closely as possible. The user must have Linx 2.5.1 installed
     and kernel modules loaded in order to use this Class. For more Information on
-    how to install Linx see http://sourceforge.net/projects/linx/
+    how to install Linx see http://sourceforge.net/projects/linx/.
     '''
 
     def __init__(self):
         '''
         Constructor
+        
+        Loads liblinx and assigns SignalClass to default BaseSignal.
         '''
         self.liblinx = CDLL("liblinx.so")
         self.SignalClass = BaseSignal
