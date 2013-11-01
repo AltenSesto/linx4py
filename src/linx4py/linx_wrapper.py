@@ -5,8 +5,6 @@ Classes:
 LinxWrapper - Used to call Linx API from python.
 LINX - Data structure representing a Linx object in liblinx.so
 
-Created on 17 okt 2013
-
 @author: Bjorn Arnelid
 '''
 from ctypes import CDLL, POINTER, Structure, c_uint, c_int, c_char_p, c_void_p, c_longlong
@@ -212,7 +210,7 @@ class LinxWrapper(object):
 
     def linx_hunt(self, linx, name, hunt_sig):
         '''
-        return id for server identified by name using hunt_sig.
+        Send hunt signal using hunt_sig to server identified by name.
 
         Matches linx function:
         int linx_hunt(LINX * linx, const char *name, union LINX_SIGNAL **hunt_sig);
@@ -220,6 +218,19 @@ class LinxWrapper(object):
         linx_hunt = self.liblinx.linx_hunt
         linx_hunt.argtypes = [POINTER(LINX), c_char_p, POINTER(POINTER(self.SignalClass))]
         return linx_hunt(linx, name, hunt_sig)
+
+    def linx_hunt_from(self, linx, name, hunt_sig, from_id):
+        '''
+        Send hunt signal using hunt_sig to server identified by name with return id from.
+        
+        Matches linx function:
+        int linx_hunt_from(LINX * linx, const char *name, union LINX_SIGNAL **hunt_sig,
+                           LINX_SPID from);
+        '''
+        linx_hunt_from = self.liblinx.linx_hunt_from
+        linx_hunt_from.argtypes = [POINTER(LINX), c_char_p, POINTER(POINTER(self.SignalClass)),
+                                   c_uint]
+        return linx_hunt_from(linx, name, hunt_sig, from_id)
 
     def linx_attach(self, linx, sig, spid):
         '''

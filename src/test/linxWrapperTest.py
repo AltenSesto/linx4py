@@ -176,6 +176,12 @@ class LinxWrapperTest(unittest.TestCase):
         linx = self.open_linx(wrapper)
         self.assertEqual(wrapper.linx_hunt(linx, self.server_name, None), 0)
 
+    def test_linx_hunt_from(self):
+        wrapper = LinxWrapper()
+        linx = self.open_linx(wrapper)
+        from_id = wrapper.linx_get_spid(linx)
+        self.assertEqual(wrapper.linx_hunt_from(linx, self.server_name, None, from_id), 0)
+
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
     unittest.main(testRunner=xmlrunner.XMLTestRunner(output="unittests"))
