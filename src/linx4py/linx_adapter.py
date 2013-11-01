@@ -27,7 +27,8 @@ class LinxAdapter(object):
         
     def open(self, client_name, options, args = None):
         '''
-        open
+        Open linx socket.
+
         Opens linx socket using client_name as handle. options and args is also sent
         into the api
         '''
@@ -41,7 +42,8 @@ class LinxAdapter(object):
 
     def hunt(self, hunt_path, hunt_signal):
         '''
-        hunt
+        Hunt for linx node.
+
         Hunts for server on hunt_path. Return signal is either hunt_signal or
         LINX_OS_HUNT_SIG if hunt_signal is set to None
         '''
@@ -55,7 +57,8 @@ class LinxAdapter(object):
 
     def receive_w_tmo(self, sig, timeout=None, sigsel=LINX_NO_SIG_SEL):
         '''
-        receive_w_tmo
+        Receive signal using timeout as timout limit if set.
+
         receive signal declared in sigsel within timeout. Method will return None
         if no signal is recieved within timeout
         '''
@@ -66,7 +69,8 @@ class LinxAdapter(object):
 
     def receive_pointer_w_tmo(self, sig, timeout=None, sigsel=LINX_NO_SIG_SEL):
         '''
-        recievePointerWTMO
+        receive pointer containing signal using timout as timeout if set.
+
         Same as receive_w_tmo but returns pointer instead for signal (useful when casting)
         '''
         state = -1
@@ -83,7 +87,8 @@ class LinxAdapter(object):
 
     def find_sender(self, signal):
         '''
-        find_sender
+        Find sender for signal.
+
         Looks for the sender of signal
         '''
         #Should fail if None
@@ -98,7 +103,8 @@ class LinxAdapter(object):
 
     def attach(self, signal, server):
         '''
-        attach
+        Attach to linx node.
+
         Method to get notification when server is terminated
         '''
         # None means use default
@@ -113,7 +119,8 @@ class LinxAdapter(object):
 
     def detach(self, reference):
         '''
-        detach
+        Detach from linx node.
+
         Method to detach attached session
         '''
         attref = pointer(c_uint(reference))
@@ -121,7 +128,8 @@ class LinxAdapter(object):
 
     def alloc(self, signal):
         '''
-        alloc
+        Allocate bufferspace for signal.
+
         Method to allocate buffer space for signal to send
         '''
         # TODO We shouldnt accept a signal, that is not intuitive
@@ -133,7 +141,8 @@ class LinxAdapter(object):
 
     def free(self, signal):
         '''
-        free
+        Free allocated buffermemory for signal.
+
         Method to free up signal buffer in linx.
         '''
         spp = pointer(pointer(signal))
@@ -142,7 +151,8 @@ class LinxAdapter(object):
 
     def send(self, signal, to_id, from_id=None):
         '''
-        send
+        Send signal to to_id.
+
         Method to send signal to target, the method will "consume" the signal,
         freeing the linx bufferspace
         '''
@@ -162,7 +172,8 @@ class LinxAdapter(object):
 
     def close(self):
         '''
-        close
+        Close linx socket.
+
         Method to close linx connection 
         '''
         state = self.wrapper.linx_close(self.instance)
@@ -180,12 +191,17 @@ class LinxAdapter(object):
 
 class LinxError(Exception):
     '''
-    LinxError
-    Standard exception thrown by linx
+    Standard exception thrown by linx.
     '''
     def __init__(self, value):
+        '''
+        Constructor.
+        '''
         super(LinxError, self).__init__()
         self.value = value
 
     def __str__(self):
+        '''
+        To string method.
+        '''
         return repr(self.value)
