@@ -14,10 +14,10 @@ from ctypes import CDLL, POINTER, Structure, c_uint, c_int, c_char_p, c_void_p, 
 from linx_constants import BaseSignal
 
 class LinxWrapper(object):
-    
+
     '''
-    Represent liblinx.so mirroring the Linx API as closely as possible.
-    
+    Represent liblinx.so, mirroring the Linx API as closely as possible.
+
     Mirrors linx.h as closely as possible. The user must have Linx 2.5.1 installed
     and kernel modules loaded in order to use this Class. For more Information on
     how to install Linx see http://sourceforge.net/projects/linx/.
@@ -26,7 +26,7 @@ class LinxWrapper(object):
     def __init__(self):
         '''
         Constructor
-        
+
         Loads liblinx and assigns SignalClass to default BaseSignal.
         '''
         self.liblinx = CDLL("liblinx.so")
@@ -34,7 +34,8 @@ class LinxWrapper(object):
         
     def linx_open(self, name, options, arg):
         '''
-        linx_open
+        Open linx socket and return linx representation.
+
         Matches linx function:
         LINX *linx_open(const char *name, uint32_t options, void *arg); 
         '''
@@ -45,7 +46,8 @@ class LinxWrapper(object):
 
     def linx_close(self, linx):
         '''
-        linx_close
+        Close linx socket.
+
         Matches linx function:
         int linx_close(LINX * linx);
         '''
@@ -55,7 +57,8 @@ class LinxWrapper(object):
 
     def linx_get_descriptor(self, linx):
         '''
-        linx_get_descriptor
+        Get socket descriptor associated with linx.
+
         Matches linx function:
         int linx_get_descriptor(LINX * linx);
         '''
@@ -65,7 +68,8 @@ class LinxWrapper(object):
 
     def linx_alloc(self, linx, size, sig_no):
         '''
-        linx_alloc
+        Allocate bufferspace and return pointer to SignalClass object.
+
         Matches linx function:
         union LINX_SIGNAL *linx_alloc(LINX * linx, LINX_OSBUFSIZE size, LINX_SIGSELECT sig_no);
         '''
@@ -76,7 +80,8 @@ class LinxWrapper(object):
 
     def linx_free_buf(self, linx, sig):
         '''
-        linx_free
+        Free bufferspace populated by sig.
+
         Matches linx function:
         int linx_free_buf(LINX * linx, union LINX_SIGNAL **sig);
         '''
@@ -86,7 +91,8 @@ class LinxWrapper(object):
 
     def linx_send(self, linx, sig, to_id):
         '''
-        linx_send
+        Send sig to to_id.
+
         Matches linx function:
         int linx_send(LINX * linx, union LINX_SIGNAL **sig, LINX_SPID to);
         '''
@@ -96,7 +102,8 @@ class LinxWrapper(object):
 
     def linx_send_w_s(self, linx, sig, from_id, to_id):
         '''
-        linx_send_w_s
+        Send sig to to_id setting sender to from_id.
+
         Matches linx function:
         int linx_send_w_s(LINX * linx, union LINX_SIGNAL **sig, LINX_SPID from, LINX_SPID to);
         '''
@@ -107,7 +114,8 @@ class LinxWrapper(object):
 
     def linx_send_w_opt(self, linx, sig, from_id, to_id, taglist):
         '''
-        linx_send_w_opt
+        Send sig to to_id with sender from_id specifying options to taglist.
+
         Matches linx function:
         int linx_send_w_opt(LINX * linx, union LINX_SIGNAL **sig, LINX_SPID from,
                             LINX_SPID to, int32_t *taglist);
@@ -119,7 +127,8 @@ class LinxWrapper(object):
 
     def linx_sigattr(self, linx, sig, attr, value):
         '''
-        linx_sigattr
+        set value to signal attribute attr for received signal sig.
+
         Matches linx function:
         int linx_sigattr(const LINX *linx, const union LINX_SIGNAL **sig, uint32_t attr,
                         void **value);
@@ -131,7 +140,8 @@ class LinxWrapper(object):
 
     def linx_receive(self, linx, sig, sig_sel):
         '''
-        linx_receive
+        Receive signal in sig_sel without timeout and set it to sig.
+
         Matches linx function:
         int linx_receive(LINX * linx, union LINX_SIGNAL **sig, const LINX_SIGSELECT * sig_sel);
         '''
@@ -142,7 +152,8 @@ class LinxWrapper(object):
 
     def linx_receive_w_tmo(self, linx, sig, tmo, sig_sel):
         '''
-        linx_receive_w_tmo
+        Receive signal in sig_sel with timeout tmo and set it to sig.
+
         Matches linx function:
         int linx_receive_w_tmo(LINX * linx, union LINX_SIGNAL **sig, 
                                LINX_OSTIME tmo, const LINX_SIGSELECT * sig_sel);
@@ -154,7 +165,8 @@ class LinxWrapper(object):
 
     def linx_receive_from(self, linx, sig, tmo, sig_sel, from_id):
         '''
-        linx_receive_from
+        Receive signal in sig_sel from from_id with timeout tmo and set it to sig.
+
         Matches linx function:
         int linx_receive_from(LINX * linx, union LINX_SIGNAL **sig, LINX_OSTIME tmo,
                               const LINX_SIGSELECT * sig_sel, LINX_SPID from);
@@ -166,7 +178,8 @@ class LinxWrapper(object):
 
     def linx_sender(self, linx, sig):
         '''
-        linx_sender
+        Get sender id from received signal sig.
+
         Matches linx function:
         LINX_SPID linx_sender(LINX * linx, union LINX_SIGNAL **sig);
         '''
@@ -199,7 +212,8 @@ class LinxWrapper(object):
 
     def linx_hunt(self, linx, name, hunt_sig):
         '''
-        linx_hunt
+        return id for server identified by name using hunt_sig.
+
         Matches linx function:
         int linx_hunt(LINX * linx, const char *name, union LINX_SIGNAL **hunt_sig);
         '''
@@ -209,7 +223,8 @@ class LinxWrapper(object):
 
     def linx_attach(self, linx, sig, spid):
         '''
-        linx_attach
+        Attach to server spid and return reference.
+
         Matches linx function:
         LINX_OSATTREF linx_attach(LINX * linx, union LINX_SIGNAL **sig, LINX_SPID spid);
         '''
@@ -219,7 +234,8 @@ class LinxWrapper(object):
 
     def linx_detach(self, linx, attref):
         '''
-        linx_detach
+        Detach from attached server attref.
+
         Matches linx function:
         int linx_detach(LINX * linx, LINX_OSATTREF * attref);
         '''
@@ -229,7 +245,8 @@ class LinxWrapper(object):
 
     def linx_get_spid(self, linx):
         '''
-        linx_get_spid
+        Get linx objects id.
+
         Matches linx function:
         LINX_SPID linx_get_spid(LINX * linx);
         '''
@@ -239,8 +256,7 @@ class LinxWrapper(object):
     
     def set_signal_class(self, signalClass):
         '''
-        setSignalClass
-        Utility function to get the correct class for signal from pointer
+        Set signal class to signalClass needed whan handling signal pointers in wrapper.
         '''
         self.SignalClass = signalClass
 
@@ -269,6 +285,11 @@ class LINXSigAdm(Structure):
 
 
 class LINX(Structure):
+    """
+    Representation of LINX object. 
+    
+    Use this to connect to linx through LinxWrapper.
+    """
     _fields_ = [("owned_sig", LINK),
                 ("magic", c_uint),
                 ("socket", c_int),
