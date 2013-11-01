@@ -18,11 +18,11 @@ class LinxWrapperTest(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         self.server_name = "example_server"
-        self.process = server.get_server(self.server_name)
+        self.server = server.get_server(self.server_name)
         
     @classmethod
     def tearDownClass(self):
-        self.process.stop()
+        self.server.stop()
 
     def test_linx_open(self):
         wrapper = LinxWrapper()
@@ -182,6 +182,11 @@ class LinxWrapperTest(unittest.TestCase):
         from_id = wrapper.linx_get_spid(linx)
         self.assertEqual(wrapper.linx_hunt_from(linx, self.server_name, None, from_id), 0)
 
+    def test_linx_attach(self):
+        wrapper = LinxWrapper()
+        linx = self.open_linx(wrapper)
+        to_id = self.get_server(wrapper, linx)
+        self.assertGreater(wrapper.linx_attach(linx, None, to_id), 0)
 
 
 if __name__ == "__main__":

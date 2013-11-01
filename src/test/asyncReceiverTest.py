@@ -20,11 +20,11 @@ class AsyncReceiverTest(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         self.server_name = "example_server"
-        self.process = server.get_server(self.server_name)
+        self.server = server.get_server(self.server_name)
         
     @classmethod
     def tearDownClass(self):
-        self.process.stop()
+        self.server.stop()
 
     def open_linx(self, clientName):
         linxInstance = LinxAdapter()

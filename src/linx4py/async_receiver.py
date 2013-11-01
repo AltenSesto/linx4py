@@ -35,6 +35,7 @@ class AsyncReceiver(Thread):
         self.start()
         
     def run(self):
+        print "Receiver: Starting"
         self.main()
             
     def main(self):
@@ -46,7 +47,9 @@ class AsyncReceiver(Thread):
             sig = BaseSignal()
             sp = self.adapter.receive_pointer_w_tmo(sig, self.receive_timeout, self.sigsel)
             self._signals.append(sp)
-            
+        self.adapter.close()
+        print "Receiver: Stopping, good bye!"
+
     def add_union_type(self, SignalClass):
         '''
         addSignalType
@@ -68,4 +71,5 @@ class AsyncReceiver(Thread):
         '''
         Stop Async reciever
         '''
+        print "Receiver: Stop requested"
         self.should_quit = True
