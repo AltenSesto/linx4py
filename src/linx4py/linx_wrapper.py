@@ -176,7 +176,8 @@ class LinxWrapper(object):
 
     def linx_sigsize(self, linx, sig):
         '''
-        linx_sigsize
+        Return signal buffer size of sig.
+        
         Matches linx function:
         LINX_OSBUFSIZE linx_sigsize(LINX * linx, union LINX_SIGNAL **sig);
         '''
@@ -186,7 +187,8 @@ class LinxWrapper(object):
 
     def linx_set_sigsize(self, linx, sig, sigsize):
         '''
-        linx_set_sigsize
+        Set signal buffer size for sig.
+        
         Matches linx function:
         int linx_set_sigsize(LINX * linx, union LINX_SIGNAL **sig, LINX_OSBUFSIZE sigsize);
         '''
