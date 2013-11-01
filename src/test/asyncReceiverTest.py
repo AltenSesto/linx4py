@@ -26,7 +26,7 @@ class AsyncReceiverTest(unittest.TestCase):
     def tearDownClass(self):
         self.process.stop()
 
-    def openLinx(self, clientName):
+    def open_linx(self, clientName):
         linxInstance = LinxAdapter()
         linxInstance.open(clientName, 0, None)
         return linxInstance
@@ -49,9 +49,9 @@ class AsyncReceiverTest(unittest.TestCase):
         return linxInstance.send(signal, serverID, receiverID)
     
     def testReceiveSignalAsync(self):
-        receiverInstance = self.openLinx("MyReceiverName")
+        receiverInstance = self.open_linx("MyReceiverName")
         receiverID = receiverInstance.get_spid()
-        senderInstance = self.openLinx("MySenderName")
+        senderInstance = self.open_linx("MySenderName")
         serverID = self.findServer(senderInstance, self.server_name)
         receiver = AsyncReceiver(receiverInstance)
         receiver.add_union_type(LINX_SIGNAL)
@@ -64,7 +64,7 @@ class AsyncReceiverTest(unittest.TestCase):
         self.assertEqual(0x3341, signal.sig_no)
         
     def testReceiveAsyncEmpty(self):
-        receiverInstance = self.openLinx("MyReceiverName")
+        receiverInstance = self.open_linx("MyReceiverName")
         receiver = AsyncReceiver(receiverInstance)
         receiver.init_receive()
         signal = receiver.receive()
