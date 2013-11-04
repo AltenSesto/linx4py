@@ -25,7 +25,7 @@ class LinxAdapter(object):
         '''
         self.wrapper = LinxWrapper()
         
-    def open(self, client_name, options, args = None):
+    def open(self, client_name, options=0, args = None):
         '''
         Open linx socket.
 
