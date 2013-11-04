@@ -26,11 +26,20 @@ class AsyncReceiverTest(unittest.TestCase):
     def tearDownClass(self):
         self.server.stop()
 
+    def setUp(self):
+        linxInstance = self.open_linx("MyReceiver")
+        self.receiver = AsyncReceiver(linxInstance)
+        self.receiver.add_union_type(LINX_SIGNAL)
+        self.receiver.init_receive()
+
+    def tearDown(self):
+        self.receiver.stopReceive()
+
     def open_linx(self, clientName):
         linxInstance = LinxAdapter()
         linxInstance.open(clientName, 0, None)
         return linxInstance
-    
+
     def getHuntSignal(self):
         SigArrayType =  c_uint * 2
         return SigArrayType(1,251)
@@ -49,26 +58,17 @@ class AsyncReceiverTest(unittest.TestCase):
         return linxInstance.send(signal, serverID, receiverID)
     
     def testReceiveSignalAsync(self):
-        receiverInstance = self.open_linx("MyReceiverName")
-        receiverID = receiverInstance.get_spid()
+        receiverID = self.receiver.adapter.get_spid()
         senderInstance = self.open_linx("MySenderName")
         serverID = self.findServer(senderInstance, self.server_name)
-        receiver = AsyncReceiver(receiverInstance)
-        receiver.add_union_type(LINX_SIGNAL)
-        receiver.init_receive()
         self.sendSignal(senderInstance, 1, serverID, receiverID)
         # Making sure we would have timed out if not async
         time.sleep(2) 
-        signal = receiver.receive()
-        receiver.stopReceive()
+        signal = self.receiver.receive()
         self.assertEqual(0x3341, signal.sig_no)
         
     def testReceiveAsyncEmpty(self):
-        receiverInstance = self.open_linx("MyReceiverName")
-        receiver = AsyncReceiver(receiverInstance)
-        receiver.init_receive()
-        signal = receiver.receive()
-        receiver.stopReceive()
+        signal = self.receiver.receive()
         self.assertIsNone(signal, "signal should be None when que is empty")
 
 if __name__ == "__main__":

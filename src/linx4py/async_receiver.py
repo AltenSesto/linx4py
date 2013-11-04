@@ -5,9 +5,11 @@ Created on 24 okt 2013
 '''
 
 from threading import Thread
+import time
 
 from linx_constants import LINX_NO_SIG_SEL, BaseSignal
 from signal_collection import SignalCollection
+#from linx_adapter import LinxError
 
 class AsyncReceiver(Thread):
     '''
@@ -22,6 +24,7 @@ class AsyncReceiver(Thread):
         Constructor
         '''
         Thread.__init__(self)
+        self.initializing = True
         self._signals = []
         self.signal_collection = SignalCollection()
         self.adapter = adapter
@@ -31,6 +34,7 @@ class AsyncReceiver(Thread):
         Start receiving _signals, note that this will tie up the linx socket making it 
         impossible to do any other operations on it
         '''
+        self.should_quit = False
         self.sigsel = sigsel
         self.start()
         
@@ -42,7 +46,7 @@ class AsyncReceiver(Thread):
         '''
         lets think about blocking _signals....
         '''
-        self.should_quit = False
+        self.initializing = False
         while(not self.should_quit):
             sig = BaseSignal()
             sp = self.adapter.receive_pointer_w_tmo(sig, self.receive_timeout, self.sigsel)
@@ -62,6 +66,8 @@ class AsyncReceiver(Thread):
         '''
         Get and remove first signal in signal list
         '''
+        while self.initializing:
+            time.sleep(0.001)
         if(not self._signals):
             return None
         sp = self._signals.pop(0)
@@ -71,5 +77,9 @@ class AsyncReceiver(Thread):
         '''
         Stop Async reciever
         '''
+        while self.initializing:
+            time.sleep(0.001)
+#         if(self.should_quit == None):
+#             raise LinxError("Can not stop receiver that is not receiving")
         print "Receiver: Stop requested"
         self.should_quit = True
