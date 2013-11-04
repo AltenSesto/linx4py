@@ -6,8 +6,8 @@ Created on 24 okt 2013
 
 from threading import Thread
 
-from linx_constants import LINX_NO_SIG_SEL, BaseSignal
-from signal_collection import SignalCollection
+from linx4py.linx_constants import LINX_NO_SIG_SEL, BaseSignal
+from linx4py.signal_collection import SignalCollection
 
 class AsyncReceiver(Thread):
     '''
