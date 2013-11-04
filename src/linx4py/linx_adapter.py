@@ -5,8 +5,8 @@ Created on 15 okt 2013
 '''
 
 from ctypes import pointer, sizeof, c_uint
-from linx4py.linx_wrapper import LinxWrapper
-from linx4py.linx_constants import LINX_NO_SIG_SEL
+from linx_wrapper import LinxWrapper
+from linx_constants import LINX_NO_SIG_SEL
 
 
 class LinxAdapter(object):

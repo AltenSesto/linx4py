@@ -9,7 +9,7 @@ LINX - Data structure representing a Linx object in liblinx.so
 '''
 from ctypes import CDLL, POINTER, Structure, c_uint, c_int, c_char_p, c_void_p, c_longlong
 
-from linx4py.linx_constants import BaseSignal
+from linx_constants import BaseSignal
 
 class LinxWrapper(object):
 

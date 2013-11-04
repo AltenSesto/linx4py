@@ -4,10 +4,10 @@ Created on 22 okt 2013
 @author: Bjorn Arnelid
 '''
 from ctypes import memmove, addressof, sizeof, c_uint
-from linx4py.linx_adapter import LinxAdapter
-from linx4py.linx_wrapper import BaseSignal
-from linx4py.linx_constants import LINX_OS_HUNT_SIG_SEL
-from linx4py.signal_collection import SignalCollection
+from linx_adapter import LinxAdapter
+from linx_wrapper import BaseSignal
+from linx_constants import LINX_OS_HUNT_SIG_SEL
+from signal_collection import SignalCollection
 
 class Linx(object):
     '''
