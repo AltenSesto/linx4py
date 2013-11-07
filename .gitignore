@@ -4,3 +4,10 @@
 *.pyc
 .project
 .pydevproject
+unittests/
+complexity.txt
+coverage.xml
+pep8_out.txt
+pylint_out.txt
+sloccount_out.txt
+.coverage
