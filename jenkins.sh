@@ -14,6 +14,11 @@ pycabehtml -i complexity.txt -o complexity.html -a complexity_acc.txt -g output.
 #pyreverse -A -S -o png -p GameOfLife game_of_life/*.py
 
 coverage run --source=src/test
-coverage xml --omit="*__init__.py"
+coverage run src/test/linx_wrapper_test.py 
+coverage run -a src/test/linx_adapter_test.py 
+coverage run -a src/test/linx_test.py 
+coverage run -a src/test/async_receiver_test.py 
+coverage run -a src/test/signal_collection_test.py 
+coverage xml --omit="*__init__*"
 
 doxygen Doxyfile
