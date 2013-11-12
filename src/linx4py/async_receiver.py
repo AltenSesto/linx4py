@@ -7,8 +7,8 @@ Created on 24 okt 2013
 from threading import Thread
 import time
 
-from linx_constants import LINX_NO_SIG_SEL, BaseSignal
-from signal_collection import SignalCollection
+from linx4py.linx_constants import LINX_NO_SIG_SEL, BaseSignal
+from linx4py.signal_collection import SignalCollection
 #from linx_adapter import LinxError
 
 class AsyncReceiver(Thread):
@@ -39,7 +39,7 @@ class AsyncReceiver(Thread):
         self.start()
         
     def run(self):
-        print "Receiver: Starting"
+        print("Receiver: Starting")
         self.main()
             
     def main(self):
@@ -52,7 +52,7 @@ class AsyncReceiver(Thread):
             sp = self.adapter.receive_pointer_w_tmo(sig, self.receive_timeout, self.sigsel)
             self._signals.append(sp)
         self.adapter.close()
-        print "Receiver: Stopping, good bye!"
+        print("Receiver: Stopping, good bye!")
 
     def add_union_type(self, SignalClass):
         '''
@@ -81,5 +81,5 @@ class AsyncReceiver(Thread):
             time.sleep(0.001)
 #         if(self.should_quit == None):
 #             raise LinxError("Can not stop receiver that is not receiving")
-        print "Receiver: Stop requested"
+        print("Receiver: Stop requested")
         self.should_quit = True

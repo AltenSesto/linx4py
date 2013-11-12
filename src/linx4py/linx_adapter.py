@@ -5,8 +5,8 @@ Created on 15 okt 2013
 '''
 
 from ctypes import pointer, sizeof, c_uint
-from linx_wrapper import LinxWrapper
-from linx_constants import LINX_NO_SIG_SEL
+from linx4py.linx_wrapper import LinxWrapper
+from linx4py.linx_constants import LINX_NO_SIG_SEL
 
 
 class LinxAdapter(object):
@@ -35,10 +35,17 @@ class LinxAdapter(object):
         # Should fail if None
         if(client_name == None):
             raise LinxError("Client Name must not be None")
-        ref = self.wrapper.linx_open(client_name, options, args)
+        asci_name = self._convert_if_unicode(client_name)
+        ref = self.wrapper.linx_open(asci_name, options, args)
         if not ref:
             raise LinxError("Linx exited in fail state when initializing")
         self.instance = ref
+
+    def _convert_if_unicode(self, string):
+        try:
+            return string.encode('ascii','ignore')
+        except AttributeError:
+            return string
 
     def hunt(self, hunt_path, hunt_signal):
         '''
@@ -50,7 +57,8 @@ class LinxAdapter(object):
         #Should fail if None
         if(hunt_path == None):
             raise LinxError("HuntPath must not be None")
-        state = self.wrapper.linx_hunt(self.instance, hunt_path, hunt_signal)
+        ascii_hunt = self._convert_if_unicode(hunt_path)
+        state = self.wrapper.linx_hunt(self.instance, ascii_hunt, hunt_signal)
         if(state == -1):
             raise LinxError("Linx exited in fail state when hunting for server " + hunt_path)
         return state

@@ -9,7 +9,7 @@ linx4py instead of pyogre, at least for straight forward linx calls.
  
 '''
 
-import linx
+from linx4py import linx
 
 from ctypes import Structure, c_uint
 

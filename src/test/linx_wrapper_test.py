@@ -4,7 +4,7 @@ Created on 30 okt 2013
 @author: Bjorn Arnelid
 '''
 import unittest
-import xmlrunner
+#import xmlrunner
 from ctypes import sizeof, pointer, c_uint8, c_int
 
 from linx4py.linx_wrapper import LinxWrapper
@@ -17,7 +17,8 @@ class LinxWrapperTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(self):
-        self.server_name = "example_server"
+        unicode_string = "example_server"
+        self.server_name = unicode_string.encode('ascii','ignore')
         self.server = server.get_server(self.server_name)
         
     @classmethod
@@ -29,13 +30,14 @@ class LinxWrapperTest(unittest.TestCase):
         name = "example_client"
         options = 0
         args = None
-        self.assertIsNotNone(wrapper.linx_open(name, options, args), "wrapper.linx_open should not return None")
+        self.assertIsNotNone(wrapper.linx_open(name.encode('ascii','ignore'), options, args),
+                              "wrapper.linx_open should not return None")
     
     def open_linx(self, wrapper):
         name = "example_client"
         options = 0
         args = None
-        return wrapper.linx_open(name, options, args)
+        return wrapper.linx_open(name.encode('ascii','ignore'), options, args)
 
     def test_linx_close(self):
         wrapper = LinxWrapper()
@@ -191,4 +193,5 @@ class LinxWrapperTest(unittest.TestCase):
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main(testRunner=xmlrunner.XMLTestRunner(output="unittests"))
+    unittest.main()
+    #unittest.main(testRunner=xmlrunner.XMLTestRunner(output="unittests"))

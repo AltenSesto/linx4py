@@ -4,15 +4,15 @@ Created on 15 okt 2013
 @author: Bjorn Arnelid
 '''
 import unittest
-import xmlrunner
+#import xmlrunner
 from ctypes import POINTER, cast
 
 from linx4py.linx_adapter import LinxAdapter, LinxError
 from linx4py.linx_wrapper import LinxWrapper, LINX
 from linx4py.linx_constants import LINX_OS_HUNT_SIG_SEL, LINX_NO_SIG_SEL
 
-import server
-from signals import LINX_SIGNAL, BASE_SIGNAL
+from test import  server
+from test.signals import LINX_SIGNAL, BASE_SIGNAL
 
 class LinxAdapterTest(unittest.TestCase):
     '''
@@ -263,4 +263,5 @@ class TestCloseWrapper(LinxWrapper):
     
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main(testRunner=xmlrunner.XMLTestRunner(output="unittests"))
+    unittest.main()
+    #unittest.main(testRunner=xmlrunner.XMLTestRunner(output="unittests"))

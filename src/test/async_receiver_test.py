@@ -5,15 +5,15 @@ Created on 24 okt 2013
 '''
 import unittest
 import time
-import xmlrunner
+#import xmlrunner
 from ctypes import c_uint
 
 from linx4py.linx_adapter import LinxAdapter
 from linx4py.async_receiver import AsyncReceiver
 
-from signals import LINX_SIGNAL
+from test.signals import LINX_SIGNAL
 
-import server
+from test import server
 
 class AsyncReceiverTest(unittest.TestCase):
     
@@ -73,4 +73,5 @@ class AsyncReceiverTest(unittest.TestCase):
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testReceiveSignal']
-    unittest.main(testRunner=xmlrunner.XMLTestRunner(output="unittests"))
+    unittest.main()
+    #unittest.main(testRunner=xmlrunner.XMLTestRunner(output="unittests"))

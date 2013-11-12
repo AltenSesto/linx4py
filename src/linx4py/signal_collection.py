@@ -6,8 +6,8 @@ Created on 24 okt 2013
 
 from ctypes import POINTER, cast
 
-from linx_adapter import LinxError
-from linx_constants import BaseSignal
+from linx4py.linx_adapter import LinxError
+from linx4py.linx_constants import BaseSignal
 
 class SignalCollection(object):
     '''

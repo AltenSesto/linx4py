@@ -4,12 +4,12 @@ Created on 28 okt 2013
 @author: bjorn
 '''
 import unittest
-import xmlrunner
+#import xmlrunner
 from ctypes import pointer
 
 from linx4py.signal_collection import SignalCollection
 from linx4py.linx_adapter import LinxError
-from signals import LINX_SIGNAL, REQUEST_SIGNAL, REPLY_SIGNAL_NO, BASE_SIGNAL
+from test.signals import LINX_SIGNAL, REQUEST_SIGNAL, REPLY_SIGNAL_NO, BASE_SIGNAL
 
 class SignalCollectionTest(unittest.TestCase):
 
@@ -65,4 +65,5 @@ class SignalCollectionTest(unittest.TestCase):
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main(testRunner=xmlrunner.XMLTestRunner(output="unittests"))
+    unittest.main()
+    #unittest.main(testRunner=xmlrunner.XMLTestRunner(output="unittests"))

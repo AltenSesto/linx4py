@@ -4,11 +4,11 @@ Created on 22 okt 2013
 @author: Bjorn Arnelid
 '''
 import unittest
-import xmlrunner
+#import xmlrunner
 
-import server
+from test import  server
 from linx4py import linx
-from signals import LINX_SIGNAL, REQUEST_SIGNAL
+from test.signals import LINX_SIGNAL, REQUEST_SIGNAL
 
 class LinxTest(unittest.TestCase):
 
@@ -77,4 +77,5 @@ class LinxTest(unittest.TestCase):
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main(testRunner=xmlrunner.XMLTestRunner(output="unittests"))
+    unittest.main()
+    #unittest.main(testRunner=xmlrunner.XMLTestRunner(output="unittests"))
