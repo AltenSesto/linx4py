@@ -1,9 +1,9 @@
 export PYTHONPATH="${PYTHONPATH}:./src"
-python src/test/linx_wrapper_test.py
-python src/test/linx_adapter_test.py
-python src/test/linx_test.py
-python src/test/async_reciever_test.py
-python src/test/signal_collection_test.py
+python3 src/test/linx_wrapper_test.py
+python3 src/test/linx_adapter_test.py
+python3 src/test/linx_test.py
+python3 src/test/async_reciever_test.py
+python3 src/test/signal_collection_test.py
 
 pylint --output-format=parseable src/linx4py/*.py | tee pylint_out.txt
 pep8 src/linx4py/*.py | tee pep8_out.txt

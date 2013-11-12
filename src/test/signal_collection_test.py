@@ -4,7 +4,7 @@ Created on 28 okt 2013
 @author: bjorn
 '''
 import unittest
-#import xmlrunner
+import xmlrunner
 from ctypes import pointer
 
 from linx4py.signal_collection import SignalCollection
@@ -65,5 +65,5 @@ class SignalCollectionTest(unittest.TestCase):
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()
-    #unittest.main(testRunner=xmlrunner.XMLTestRunner(output="unittests"))
+    #unittest.main()
+    unittest.main(testRunner=xmlrunner.XMLTestRunner(output="unittests"))

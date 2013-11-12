@@ -4,7 +4,7 @@ Created on 30 okt 2013
 @author: Bjorn Arnelid
 '''
 import unittest
-#import xmlrunner
+import xmlrunner
 from ctypes import sizeof, pointer, c_uint8, c_int
 
 from linx4py.linx_wrapper import LinxWrapper
@@ -193,5 +193,5 @@ class LinxWrapperTest(unittest.TestCase):
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()
-    #unittest.main(testRunner=xmlrunner.XMLTestRunner(output="unittests"))
+    #unittest.main()
+    unittest.main(testRunner=xmlrunner.XMLTestRunner(output="unittests"))
