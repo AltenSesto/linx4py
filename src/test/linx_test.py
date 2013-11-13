@@ -28,6 +28,7 @@ class LinxTest(unittest.TestCase):
 
     def tearDown(self):
         self.linxInstance = None
+        self.server_id = None
 
 
     def test_linx_create_instance(self):
