@@ -21,58 +21,55 @@ class LinxTest(unittest.TestCase):
     def tearDownClass(self):
         self.server.stop()
 
-    def testLinxcreateInstance(self):
-        linxInstance = linx.Linx("MyClientName")
-        self.assertIsNotNone(linxInstance.adapter, "Linx should have linx object")
-        
-    def testFindServerReturnsID(self):
-        linxInstance = linx.Linx("MyClientName")
-        serverID = linxInstance.hunt(self.server_name, 1000)
-        self.assertGreater(serverID, 0, "serverID must be greater then 0 but is " + str(serverID))
+    def setUp(self):
+        self.linxInstance = linx.Linx("MyClientName")
+        self.server_id = self.linxInstance.hunt(self.server_name, 1000)
+        self.linxInstance.add_union_type(LINX_SIGNAL)
 
-    def testReceiveSignalID(self):
-        linxInstance = linx.Linx("MyClientName")
-        serverID = linxInstance.hunt(self.server_name, 1000)
-        linxInstance.add_union_type(LINX_SIGNAL)
+    def tearDown(self):
+        self.linxInstance = None
+
+
+    def test_linx_create_instance(self):
+        self.assertIsNotNone(self.linxInstance.adapter, "Linx should have linx object")
+        
+    def test_find_server_returns_id(self):
+        self.assertGreater(self.server_id, 0, "serverID must be greater then 0 but is " + str(self.server_id))
+
+    def test_receive_signal_id(self):
         sendSignal = REQUEST_SIGNAL()
-        linxInstance.send(sendSignal, serverID)
-        receiveSignal = linxInstance.receive(1000)
+        self.linxInstance.send(sendSignal, self.server_id)
+        receiveSignal = self.linxInstance.receive(1000)
         self.assertEquals(receiveSignal.sig_no, 0x3341)
         
-    def testRecieveSignalContent(self):
-        linxInstance = linx.Linx("MyClientName")
-        serverID = linxInstance.hunt(self.server_name, 1000)
-        linxInstance.add_union_type(LINX_SIGNAL)
+    def test_recieve_signal_content(self):
         sendSignal = REQUEST_SIGNAL()
         sendSignal.seqno = 1
-        linxInstance.send(sendSignal, serverID)
-        receiveSignal = linxInstance.receive(1000)
+        self.linxInstance.send(sendSignal, self.server_id)
+        receiveSignal = self.linxInstance.receive(1000)
         self.assertEquals(receiveSignal.seqno, 1)
         
-    def testReceiveWithFilter(self):
-        linxInstance = linx.Linx("MyClientName")
-        serverID = linxInstance.hunt(self.server_name, 1000)
-        linxInstance.add_union_type(LINX_SIGNAL)
+    def test_receive_with_filter(self):
         sendSignal = REQUEST_SIGNAL()
         sendSignal.seqno = 2
-        linxInstance.send(sendSignal, serverID)
-        receiveSignal = linxInstance.receive(1000, [1, 0x3341])
+        self.linxInstance.send(sendSignal, self.server_id)
+        receiveSignal = self.linxInstance.receive(1000, [1, 0x3341])
         self.assertEquals(receiveSignal.seqno, 2)
         
-    def testGetSender(self):
-        linxInstance = linx.Linx("MyClientName")
-        serverID = linxInstance.hunt(self.server_name, 1000)
-        linxInstance.add_union_type(LINX_SIGNAL)
+    def test_get_sender(self):
         sendSignal = REQUEST_SIGNAL()
-        linxInstance.send(sendSignal, serverID)
-        receiveSignal = linxInstance.receive(1000)
-        self.assertEqual(linxInstance.get_sender(receiveSignal), serverID)
+        self.linxInstance.send(sendSignal, self.server_id)
+        receiveSignal = self.linxInstance.receive(1000)
+        self.assertEqual(self.linxInstance.get_sender(receiveSignal), self.server_id)
         
-    def testAddSignal(self):
+    def test_add_signal(self):
         linxInstance = linx.Linx("MyClientName")
         linxInstance.add_union_type(LINX_SIGNAL)
         self.assertEqual(linxInstance.signal_collection._signals[0x3340], LINX_SIGNAL)
 
+#     def test_hunt_timeout(self):
+#         
+#         self.fail("Not Implemented")
 
 
 if __name__ == "__main__":
