@@ -41,6 +41,8 @@ class Linx(object):
         self.adapter.hunt(name, None)
         hunt_sig = LINX_OS_HUNT_SIG_SEL
         signal = self.adapter.receive_w_tmo(BaseSignal(), timeout, hunt_sig)
+        if(signal==None):
+            return None
         return self.adapter.find_sender(signal)
 
     def send(self, signal, target_id, sender_id=None):

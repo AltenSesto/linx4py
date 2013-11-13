@@ -63,13 +63,11 @@ class LinxTest(unittest.TestCase):
         self.assertEqual(self.linxInstance.get_sender(receiveSignal), self.server_id)
         
     def test_add_signal(self):
-        linxInstance = linx.Linx("MyClientName")
-        linxInstance.add_union_type(LINX_SIGNAL)
-        self.assertEqual(linxInstance.signal_collection._signals[0x3340], LINX_SIGNAL)
+        self.assertEqual(self.linxInstance.signal_collection._signals[0x3340], LINX_SIGNAL)
 
-#     def test_hunt_timeout(self):
-#         
-#         self.fail("Not Implemented")
+    def test_hunt_timeout(self):
+        self.assertIsNone(self.linxInstance.hunt("NoServer", 5),
+                          "Linx should return None if no server is found")
 
 
 if __name__ == "__main__":
