@@ -1,5 +1,7 @@
 '''
-Created on 22 okt 2013
+Module for using linx in python. 
+
+Use Linx object to send and receive linx signals.
 
 @author: Bjorn Arnelid
 '''
@@ -13,6 +15,7 @@ class Linx(object):
     '''
     Class for communicating with other systems through Linx signals.
     '''
+
 
     def __init__(self, name):
         '''

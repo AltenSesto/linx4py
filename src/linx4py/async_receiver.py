@@ -1,19 +1,18 @@
 '''
-Created on 24 okt 2013
+Module for asynchronous receiving of linx signals. 
 
-@author: bjorn
+@author: Bjorn Arnelid
 '''
-
-from threading import Thread
 import time
+from threading import Thread
 
 from linx4py.linx_constants import LINX_NO_SIG_SEL, BaseSignal
 from linx4py.signal_collection import SignalCollection
-#from linx_adapter import LinxError
+
 
 class AsyncReceiver(Thread):
     '''
-    classdocs
+    Thread for receiving signals
     '''
     
     # Lets try to receive every second so that Thread does not become to unresponsive
@@ -44,7 +43,7 @@ class AsyncReceiver(Thread):
             
     def main(self):
         '''
-        lets think about blocking _signals....
+        Main thread. 
         '''
         self.initializing = False
         while(not self.should_quit):
@@ -79,7 +78,5 @@ class AsyncReceiver(Thread):
         '''
         while self.initializing:
             time.sleep(0.001)
-#         if(self.should_quit == None):
-#             raise LinxError("Can not stop receiver that is not receiving")
         print("Receiver: Stop requested")
         self.should_quit = True

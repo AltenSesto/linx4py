@@ -1,5 +1,5 @@
 '''
-Created on 24 okt 2013
+Handles Linx signals.
 
 @author: Bjorn Arnelid
 '''
@@ -11,8 +11,7 @@ from linx4py.linx_constants import BaseSignal
 
 class SignalCollection(object):
     '''
-    SignalCollection
-    Classed used for keeping signaltypes in order to convert them during 
+    Class used for keeping signaltypes in order to convert them during 
     send and receive
     '''
     def __init__(self):

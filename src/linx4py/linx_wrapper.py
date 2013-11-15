@@ -11,8 +11,8 @@ from ctypes import CDLL, POINTER, Structure, c_uint, c_int, c_char_p, c_void_p, 
 
 from linx4py.linx_constants import BaseSignal
 
-class LinxWrapper(object):
 
+class LinxWrapper(object):
     '''
     Represent liblinx.so, mirroring the Linx API as closely as possible.
 
@@ -20,6 +20,7 @@ class LinxWrapper(object):
     and kernel modules loaded in order to use this Class. For more Information on
     how to install Linx see http://sourceforge.net/projects/linx/.
     '''
+
 
     def __init__(self):
         '''
@@ -270,6 +271,7 @@ class LinxWrapper(object):
         Set signal class to signalClass needed whan handling signal pointers in wrapper.
         '''
         self.SignalClass = signalClass
+
 
 class LINK(Structure):
     pass

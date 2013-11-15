@@ -32,7 +32,6 @@ class LinxAdapter(object):
         Opens linx socket using client_name as handle. options and args is also sent
         into the api
         '''
-        # Should fail if None
         if(client_name == None):
             raise LinxError("Client Name must not be None")
         asci_name = self._convert_if_unicode(client_name)
@@ -54,7 +53,6 @@ class LinxAdapter(object):
         Hunts for server on hunt_path. Return signal is either hunt_signal or
         LINX_OS_HUNT_SIG if hunt_signal is set to None
         '''
-        #Should fail if None
         if(hunt_path == None):
             raise LinxError("HuntPath must not be None")
         ascii_hunt = self._convert_if_unicode(hunt_path)
@@ -99,7 +97,6 @@ class LinxAdapter(object):
 
         Looks for the sender of signal
         '''
-        #Should fail if None
         if(signal == None):
             raise LinxError("Signal cannot be None")
         self.wrapper.set_signal_class(signal.__class__)
@@ -140,7 +137,6 @@ class LinxAdapter(object):
 
         Method to allocate buffer space for signal to send
         '''
-        # TODO We shouldnt accept a signal, that is not intuitive
         self.wrapper.set_signal_class(signal.__class__)
         sp = self.wrapper.linx_alloc(self.instance, sizeof(signal), signal.sig_no)
         if(not sp):
@@ -164,7 +160,6 @@ class LinxAdapter(object):
         Method to send signal to target, the method will "consume" the signal,
         freeing the linx bufferspace
         '''
-        #Should fail if None
         state = -1
         if(signal == None):
             raise LinxError("Signal cannot be None")
