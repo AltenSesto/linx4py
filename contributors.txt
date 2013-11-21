@@ -1,0 +1,5 @@
+# This file contains a list of people who've made non-trivial
+# contribution to Linx4Py.  People who commit code to the project 
+# are encouraged to add their names here.
+
+Björn Arnelid <bjar@xdin.com>
