@@ -1,4 +1,4 @@
-#!/bin/env python
+#!/usr/bin/env python
 #-------------------------------------------------------------------------------
 # Copyright (c) 2013 Alten AB.
 # All rights reserved. This program and the accompanying materials
@@ -18,9 +18,8 @@ setup(
       author='Bjorn Arnelid',
       author_email='bjar@xdin.com',
       description='Linx communication bindings for python',
-      license = 'GPL3',
+      license = 'GNU Public License v3.0',
       keywords = 'linx message passing',
-      url='TBD',
       package_dir = {"": "src"},
       packages=['linx4py'],
      )
