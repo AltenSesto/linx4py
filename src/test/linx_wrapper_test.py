@@ -10,7 +10,7 @@
 #-------------------------------------------------------------------------------
 import unittest
 import xmlrunner
-from ctypes import sizeof, pointer, c_uint8, c_int
+from ctypes import sizeof, pointer, c_uint8, c_int, c_char_p
 
 from linx4py.linx_wrapper import LinxWrapper
 from linx4py.linx_constants import LINX_OS_HUNT_SIG_SEL, LINX_NO_SIG_SEL, BaseSignal
@@ -25,7 +25,7 @@ class LinxWrapperTest(unittest.TestCase):
         unicode_string = "example_server"
         self.server_name = unicode_string.encode('ascii','ignore')
         self.server = server.get_server(self.server_name)
-        
+
     @classmethod
     def tearDownClass(self):
         self.server.stop()
@@ -58,31 +58,30 @@ class LinxWrapperTest(unittest.TestCase):
         wrapper.set_signal_class(LINX_SIGNAL)
         return wrapper.linx_alloc(linx, size, sig_no)
 
- 
     def test_linx_get_descriptor(self):
         self.assertGreater(self.wrapper.linx_get_descriptor(self.linx), 0)
- 
+
     def test_linx_alloc(self):
         size = sizeof(REQUEST_SIGNAL)
         sig_no = REQUEST_SIGNAL_NO
         self.wrapper.set_signal_class(REQUEST_SIGNAL)
         self.assertTrue(self.wrapper.linx_alloc(self.linx, size, sig_no),
                         "linx_alloc should not return LINX_NIL")
-             
+
     def test_linx_free_buf(self):
         self.assertEqual(self.wrapper.linx_free_buf(self.linx, self.sig), 0)
- 
+
     def test_linx_send(self):
         self.assertEqual(self.wrapper.linx_send(self.linx, pointer(self.sig),
                                                 self.serverID), 0)
- 
+
     def test_linx_send_w_s(self):
         fromID = self.wrapper.linx_get_spid(self.linx)
         self.assertEqual(self.wrapper.linx_send_w_s(self.linx,
                                                     pointer(self.sig),
                                                     fromID,
                                                     self.serverID), 0)
- 
+
     def test_linx_send_w_opt(self):
         fromID = self.wrapper.linx_get_spid(self.linx)
         OptArrCls = c_int * 3
@@ -92,7 +91,7 @@ class LinxWrapperTest(unittest.TestCase):
                                                       fromID,
                                                       self.serverID,
                                                       optArr), 0)
- 
+
     def test_linx_sigattr(self):
         #This tells the server to return with opts
         self.sig.contents.request.seqno = -1
@@ -102,21 +101,21 @@ class LinxWrapperTest(unittest.TestCase):
         value = pointer(c_uint8())
         self.wrapper.linx_sigattr(self.linx, sp, 1, value)
         self.assertEqual(value.contents.value, 1)
- 
+
     def test_linx_receive(self):
         self.sig.contents.request.seqno = 1
         self.wrapper.linx_send(self.linx, self.sig, self.serverID)
         sp = pointer(pointer(LINX_SIGNAL()))
         self.wrapper.linx_receive(self.linx, sp, LINX_NO_SIG_SEL)
         self.assertEqual(sp.contents.contents.reply.seqno, 1)
- 
+
     def test_linx_receive_w_tmo(self):
         self.sig.contents.request.seqno = 2
         self.wrapper.linx_send(self.linx, self.sig, self.serverID)
         sp = pointer(pointer(LINX_SIGNAL()))
         self.wrapper.linx_receive_w_tmo(self.linx, sp, 1000, LINX_NO_SIG_SEL)
         self.assertEqual(sp.contents.contents.reply.seqno, 2)
-         
+
     def test_linx_receive_from(self):
         self.sig.contents.request.seqno = 3
         self.wrapper.linx_send(self.linx, self.sig, self.serverID)
@@ -124,36 +123,39 @@ class LinxWrapperTest(unittest.TestCase):
         self.wrapper.linx_receive_from(self.linx, sp, 1000, LINX_NO_SIG_SEL,
                                        self.serverID)
         self.assertEqual(sp.contents.contents.reply.seqno, 3)
- 
+
     def test_linx_sender(self):
         self.wrapper.linx_send(self.linx, self.sig, self.serverID)
         sp = pointer(pointer(LINX_SIGNAL()))
         self.wrapper.linx_receive_w_tmo(self.linx, sp, 1000, LINX_NO_SIG_SEL)
         self.assertEqual(self.wrapper.linx_sender(self.linx, sp), self.serverID)
- 
+
     def test_linx_sigsize(self):
         self.assertEqual(self.wrapper.linx_sigsize(self.linx, self.sig), sizeof(self.sig.contents))
- 
+
     def test_linx_set_sigsize(self):
         old_size = sizeof(self.sig.contents)
         self.wrapper.linx_set_sigsize(self.linx, self.sig,
                                       sizeof(self.sig.contents)+4)
         self.assertEqual(self.wrapper.linx_sigsize(self.linx, self.sig),
                          old_size+4)
- 
+
     def test_linx_hunt_from(self):
         from_id = self.wrapper.linx_get_spid(self.linx)
         self.assertEqual(self.wrapper.linx_hunt_from(self.linx,
                                                      self.server_name,
                                                      None,
                                                      from_id), 0)
- 
+
     def test_linx_attach(self):
         self.assertGreater(self.wrapper.linx_attach(self.linx, None,
                                                     self.serverID), 0)
 
-#     def test_linx_get_name(self):
-#         self.fail("Not Implemented")
+    def test_linx_get_name(self):
+        name_pointer = pointer(c_char_p())
+        self.wrapper.linx_get_name(self.linx, self.serverID, name_pointer)
+        name = name_pointer.contents.value
+        self.assertEqual(name, self.server_name)
 
 
 if __name__ == "__main__":
