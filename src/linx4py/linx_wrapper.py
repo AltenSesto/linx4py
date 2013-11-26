@@ -304,6 +304,17 @@ class LinxWrapper(object):
         linx_get_name.argtypes = [POINTER(LINX), c_uint, POINTER(c_char_p)]
         return linx_get_name(linx, spid, name)
 
+    def linx_free_name(self, linx, name):
+        '''
+        Free name from linx_get_name.
+        
+        Matches linx function:
+        int linx_free_name(LINX * linx, char **name);
+        '''
+        linx_free_name = self.liblinx.linx_free_name
+        linx_free_name.argtypes = [POINTER(LINX), POINTER(c_char_p)]
+        return linx_free_name(linx, name)
+
     def set_signal_class(self, signalClass):
         '''
         Set signal class to signalClass.

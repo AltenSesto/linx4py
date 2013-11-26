@@ -157,6 +157,12 @@ class LinxWrapperTest(unittest.TestCase):
         name = name_pointer.contents.value
         self.assertEqual(name, self.server_name)
 
+    def test_linx_free_name(self):
+        name_pointer = pointer(c_char_p())
+        self.wrapper.linx_get_name(self.linx, self.serverID, name_pointer)
+        self.assertGreater(self.wrapper.linx_free_name(self.linx, name_pointer),
+                           -1)
+
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
