@@ -66,7 +66,7 @@ class LinxWrapper(object):
         '''
         Get socket descriptor associated with linx.
 
-        Matches linx function:
+        Matches linx function:c_ulonglong
         int linx_get_descriptor(LINX * linx);
         '''
         linx_get_descriptor = self.liblinx.linx_get_descriptor
@@ -167,7 +167,7 @@ class LinxWrapper(object):
         return linx_receive(linx, sig, sig_sel)
 
     def linx_receive_w_tmo(self, linx, sig, tmo, sig_sel):
-        '''
+        '''c_ulonglong
         Receive signal in sig_sel with timeout tmo and set it to sig.
 
         Matches linx function:
@@ -315,10 +315,22 @@ class LinxWrapper(object):
         linx_free_name.argtypes = [POINTER(LINX), POINTER(c_char_p)]
         return linx_free_name(linx, name)
 
+    def linx_get_stat(self, linx, spid, stat):
+        '''
+        Get linx statistics for endpoint spid.
+        
+        Match linx function:
+        int linx_get_stat(LINX *linx, LINX_SPID spid, struct linx_info_stat **stat); 
+        '''
+        linx_get_stat = self.liblinx.linx_get_stat
+        linx_get_stat.argtypes = [POINTER(LINX), c_uint,
+                                  POINTER(POINTER(LINX_INFO_STAT))]
+        return linx_get_stat(linx, spid, stat)
+
     def set_signal_class(self, signalClass):
         '''
         Set signal class to signalClass.
-        
+
         Signal class is used to Define the signal type when calling liblinx.
         This can be set to correct class before receiving or casted to correct
         type later.
@@ -362,6 +374,25 @@ class LINX(Structure):
 
 
 LINXSigAdm._fields_ = [("link", LINK),
-                ("owner", POINTER(LINX)),
-                ("true_size", c_int),
-                ("sndrcv", linx_sndrcv_param)]
+                       ("owner", POINTER(LINX)),
+                       ("true_size", c_int),
+                       ("sndrcv", linx_sndrcv_param)]
+
+class LINX_INFO_STAT(Structure):
+    '''
+    Representation of Linx statistic object.
+    '''
+    _fields_ = [("no_sent_local_signals", c_longlong),
+                ("no_recv_local_signals", c_longlong),
+                ("no_sent_local_bytes", c_longlong),
+                ("no_recv_local_bytes", c_longlong),
+                ("no_sent_remote_signals", c_longlong),
+                ("recv_remote_signals", c_longlong),
+                ("no_sent_remote_bytes", c_longlong),
+                ("no_recv_remote_bytes", c_longlong),
+                ("no_sent_signals", c_longlong),
+                ("no_recv_signals", c_longlong),
+                ("no_sent_bytes", c_longlong),
+                ("no_recv_bytes", c_longlong),
+                ("no_queued_bytes", c_longlong),
+                ("no_queued_signals", c_longlong)]
