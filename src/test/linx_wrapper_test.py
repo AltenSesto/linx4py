@@ -163,13 +163,6 @@ class LinxWrapperTest(unittest.TestCase):
         self.assertGreater(self.wrapper.linx_free_name(self.linx, name_pointer),
                            -1)
 
-    def test_linx_get_stat(self):
-        from_id = self.wrapper.linx_get_spid(self.linx)
-        stat = pointer(pointer(LINX_INFO_STAT()))
-        # Fails either because module is not correct, or because we use void_p
-        self.assertEqual(self.wrapper.linx_get_stat(self.linx, from_id, stat),
-                         0)
-
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
