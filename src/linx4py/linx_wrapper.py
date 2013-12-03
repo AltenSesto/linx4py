@@ -105,7 +105,8 @@ class LinxWrapper(object):
         int linx_send(LINX * linx, union LINX_SIGNAL **sig, LINX_SPID to);
         '''
         linx_send = self.liblinx.linx_send
-        linx_send.argtypes = [POINTER(LINX), POINTER(POINTER(self.SignalClass)),
+        linx_send.argtypes = [POINTER(LINX),
+                              POINTER(POINTER(self.SignalClass)),
                               c_uint]
         return linx_send(linx, sig, to_id)
 
@@ -221,7 +222,7 @@ class LinxWrapper(object):
     def linx_set_sigsize(self, linx, sig, sigsize):
         '''
         Set signal buffer size for sig.
-        
+
         Matches linx function:
         int linx_set_sigsize(LINX * linx, union LINX_SIGNAL **sig, LINX_OSBUFSIZE sigsize);
         '''
@@ -247,7 +248,7 @@ class LinxWrapper(object):
     def linx_hunt_from(self, linx, name, hunt_sig, from_id):
         '''
         Send hunt signal with return id from.
-        
+
         Matches linx function:
         int linx_hunt_from(LINX * linx, const char *name, union LINX_SIGNAL **hunt_sig, LINX_SPID from);
         '''
@@ -307,7 +308,7 @@ class LinxWrapper(object):
     def linx_free_name(self, linx, name):
         '''
         Free name from linx_get_name.
-        
+
         Matches linx function:
         int linx_free_name(LINX * linx, char **name);
         '''
@@ -318,7 +319,7 @@ class LinxWrapper(object):
     def linx_get_stat(self, linx, spid, stat):
         '''
         Get linx statistics for endpoint spid.
-        
+
         Matches linx function:
         int linx_get_stat(LINX *linx, LINX_SPID spid, struct linx_info_stat **stat); 
         '''
@@ -330,7 +331,7 @@ class LinxWrapper(object):
     def linx_free_stat(self, linx, stat):
         '''
         free linx statistics object.
-        
+
         Matches linx function:
         int linx_free_stat(LINX * linx, struct linx_info_stat **stat);
         '''
@@ -338,6 +339,29 @@ class LinxWrapper(object):
         linx_free_stat.argtypes =[POINTER(LINX),
                                   POINTER(POINTER(LINX_INFO_STAT))]
         return linx_free_stat(linx, stat)
+
+    def linx_request_tmo(self, linx, tmo, sig):
+        '''
+        Send signal after tmo milliseconds.
+
+        Matches linx function:
+        LINX_OSTMOREF linx_request_tmo(LINX * linx, LINX_OSTIME tmo, union LINX_SIGNAL **sig);
+        '''
+        linx_request_tmo = self.liblinx.linx_request_tmo
+        linx_request_tmo.argtypes =[POINTER(LINX), c_uint,
+                                    POINTER(POINTER(self.SignalClass))]
+        return linx_request_tmo(linx, tmo, sig)
+
+    def linx_cancel_tmo(self, linx, tmoref):
+        '''
+        Cancel timeout request tmoref.
+        
+        Matches linx function:
+        int linx_cancel_tmo(LINX * linx, LINX_OSTMOREF * tmoref);
+        '''
+        linx_cancel_tmo = self.liblinx.linx_cancel_tmo
+        linx_cancel_tmo.argtypes = [POINTER(LINX), POINTER(c_uint)]
+        return linx_cancel_tmo(linx, tmoref)
 
     def set_signal_class(self, signalClass):
         '''

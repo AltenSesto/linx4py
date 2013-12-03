@@ -10,7 +10,7 @@
 #-------------------------------------------------------------------------------
 import unittest
 import xmlrunner
-from ctypes import sizeof, pointer, c_uint8, c_int, c_char_p
+from ctypes import sizeof, pointer, c_uint8, c_int, c_uint, c_char_p
 
 from linx4py.linx_wrapper import LinxWrapper
 from linx4py.linx_constants import LINX_OS_HUNT_SIG_SEL, LINX_NO_SIG_SEL, BaseSignal
@@ -162,6 +162,27 @@ class LinxWrapperTest(unittest.TestCase):
         self.wrapper.linx_get_name(self.linx, self.serverID, name_pointer)
         self.assertGreater(self.wrapper.linx_free_name(self.linx, name_pointer),
                            -1)
+
+    def test_linx_set_tmo(self):
+        self.wrapper.linx_request_tmo(self.linx, 100, None)
+        sp = pointer(pointer(LINX_SIGNAL()))
+        self.wrapper.linx_receive_w_tmo(self.linx, sp, 50, LINX_NO_SIG_SEL)
+        self.assertFalse(sp.contents, "Signals should be None")
+        sp = pointer(pointer(LINX_SIGNAL()))
+        self.wrapper.linx_receive_w_tmo(self.linx, sp, 100, LINX_NO_SIG_SEL)
+        self.assertEquals(sp.contents.contents.sig_no, 249)
+
+    def test_linx_tmo_ref(self):
+        ref = self.wrapper.linx_request_tmo(self.linx, 1, None)
+        self.assertNotEqual(ref, 0)
+
+    def test_linx_cancel_tmo(self):
+        ref = self.wrapper.linx_request_tmo(self.linx, 50, None)
+        self.wrapper.linx_cancel_tmo(self.linx, pointer(c_uint(ref)))
+        sp = pointer(pointer(LINX_SIGNAL()))
+        self.wrapper.linx_receive_w_tmo(self.linx, sp, 100, LINX_NO_SIG_SEL)
+        self.assertFalse(sp.contents, "Cancel should abort sending signal")
+
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
