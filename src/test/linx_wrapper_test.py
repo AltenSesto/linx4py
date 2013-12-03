@@ -12,7 +12,7 @@ import unittest
 import xmlrunner
 from ctypes import sizeof, pointer, c_uint8, c_int, c_char_p
 
-from linx4py.linx_wrapper import LinxWrapper, LINX_INFO_STAT
+from linx4py.linx_wrapper import LinxWrapper
 from linx4py.linx_constants import LINX_OS_HUNT_SIG_SEL, LINX_NO_SIG_SEL, BaseSignal
 
 from test import server
@@ -162,7 +162,6 @@ class LinxWrapperTest(unittest.TestCase):
         self.wrapper.linx_get_name(self.linx, self.serverID, name_pointer)
         self.assertGreater(self.wrapper.linx_free_name(self.linx, name_pointer),
                            -1)
-
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

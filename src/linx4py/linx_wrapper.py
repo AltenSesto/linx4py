@@ -319,13 +319,25 @@ class LinxWrapper(object):
         '''
         Get linx statistics for endpoint spid.
         
-        Match linx function:
+        Matches linx function:
         int linx_get_stat(LINX *linx, LINX_SPID spid, struct linx_info_stat **stat); 
         '''
         linx_get_stat = self.liblinx.linx_get_stat
         linx_get_stat.argtypes = [POINTER(LINX), c_uint,
                                   POINTER(POINTER(LINX_INFO_STAT))]
         return linx_get_stat(linx, spid, stat)
+
+    def linx_free_stat(self, linx, stat):
+        '''
+        free linx statistics object.
+        
+        Matches linx function:
+        int linx_free_stat(LINX * linx, struct linx_info_stat **stat);
+        '''
+        linx_free_stat = self.liblinx.linx_free_stat
+        linx_free_stat.argtypes =[POINTER(LINX),
+                                  POINTER(POINTER(LINX_INFO_STAT))]
+        return linx_free_stat(linx, stat)
 
     def set_signal_class(self, signalClass):
         '''
