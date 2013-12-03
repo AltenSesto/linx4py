@@ -57,7 +57,7 @@ class AsyncReceiverTest(unittest.TestCase):
     def findServer(self, linxInstance, name):
         linxInstance.hunt(name, None)
         hunt = self.getHuntSignal()
-        signal = linxInstance.receive_w_tmo(LINX_SIGNAL(), 10000, hunt)
+        signal = linxInstance.receive_w_tmo(LINX_SIGNAL(), 100, hunt)
         return linxInstance.find_sender(signal)
 
     def sendSignal(self, linxInstance, signalNo, serverID, receiverID):
@@ -73,7 +73,7 @@ class AsyncReceiverTest(unittest.TestCase):
         serverID = self.findServer(senderInstance, self.server_name)
         self.sendSignal(senderInstance, 1, serverID, receiverID)
         # Making sure we would have timed out if not async
-        time.sleep(2) 
+        time.sleep(0.2) 
         signal = self.receiver.receive()
         self.assertEqual(0x3341, signal.sig_no)
         

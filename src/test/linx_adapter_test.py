@@ -72,7 +72,7 @@ class LinxAdapterTest(unittest.TestCase):
     def testRecieveWTMONoneWhenTimeOut(self):
         linxInstance = self.open_linx("MyClientName")
         linxInstance.hunt("not_existing_server", None)
-        signal = linxInstance.receive_w_tmo(LINX_SIGNAL(), 500, LINX_OS_HUNT_SIG_SEL)
+        signal = linxInstance.receive_w_tmo(LINX_SIGNAL(), 10, LINX_OS_HUNT_SIG_SEL)
         self.assertIsNone(signal, "Should return None but is " + str(signal))
     
     def testRecieveWTMOReturnsOSHuntSignal(self):
@@ -96,7 +96,7 @@ class LinxAdapterTest(unittest.TestCase):
     def testThrowErrorWhenAttachFails(self):
         linxInstance = self.open_linx("MyClientName")
         linxInstance.hunt(self.server_name, None)
-        linxInstance.receive_w_tmo(LINX_SIGNAL(), 10000, LINX_OS_HUNT_SIG_SEL)
+        linxInstance.receive_w_tmo(LINX_SIGNAL(), 10, LINX_OS_HUNT_SIG_SEL)
         self.failUnlessRaises(LinxError, linxInstance.attach, None, 0)
          
     def testAttachToServer(self):
@@ -235,9 +235,6 @@ class LinxAdapterTest(unittest.TestCase):
         linxInstance.wrapper = TestCloseWrapper()
         linxInstance.instance = LINX()
         self.failUnlessRaises(LinxError, linxInstance.close)
-
-
-
 
 
 class TestOpenWrapper(LinxWrapper):
