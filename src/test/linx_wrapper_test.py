@@ -10,7 +10,7 @@
 #-------------------------------------------------------------------------------
 import unittest
 import xmlrunner
-from ctypes import sizeof, pointer, c_uint8, c_int, c_uint, c_char_p
+from ctypes import sizeof, pointer, c_uint8, c_int, c_uint, c_char_p, create_string_buffer
 
 from linx4py.linx_wrapper import LinxWrapper
 from linx4py.linx_constants import LINX_OS_HUNT_SIG_SEL, LINX_NO_SIG_SEL, BaseSignal
@@ -201,8 +201,7 @@ class LinxWrapperTest(unittest.TestCase):
         self.assertEqual(result, 0)
 
     def test_linx_get_version(self):
-        datadummy = b'0'*16
-        buf = c_char_p(datadummy)
+        buf = create_string_buffer(16)
         ver = self.wrapper.linx_get_version(buf)
         self.assertNotEqual(ver, -1)
 
