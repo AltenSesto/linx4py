@@ -375,6 +375,28 @@ class LinxWrapper(object):
         linx_modify_tmo.argtypes = [POINTER(LINX), POINTER(c_uint), c_uint]
         return linx_modify_tmo(linx, tmoref, tmo)
 
+    def linx_request_new_link(self, linx, token):
+        '''
+        Request new link signal from linx kernel.
+
+        Matches linx function:
+        LINX_NLREF linx_request_new_link(LINX * linx, LINX_NLTOKEN token);
+        '''
+        linx_request_new_link = self.liblinx.linx_request_new_link
+        linx_request_new_link.argtypes = [POINTER(LINX), c_uint]
+        return linx_request_new_link(linx, token)
+
+    def linx_cancel_new_link(self, linx, nlref):
+        '''
+        Cancel requested link nlref.
+
+        Matches linx function:
+        int linx_cancel_new_link(LINX * linx, LINX_NLREF *nlref);
+        '''
+        linx_cancel_new_link = self.liblinx.linx_cancel_new_link
+        linx_cancel_new_link.argtypes = [POINTER(LINX), POINTER(c_uint)]
+        return linx_cancel_new_link(linx, nlref)
+
     def set_signal_class(self, signalClass):
         '''
         Set signal class to signalClass.

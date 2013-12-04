@@ -190,6 +190,16 @@ class LinxWrapperTest(unittest.TestCase):
         self.wrapper.linx_receive_w_tmo(self.linx, sp, 50, LINX_NO_SIG_SEL)
         self.assertEquals(sp.contents.contents.sig_no, 249)
 
+    def test_linx_new_link(self):
+        ref = self.wrapper.linx_request_new_link(self.linx, 0)
+        self.assertNotEqual(ref, 0)
+
+    def test_linx_cancel_link(self):
+        ref = self.wrapper.linx_request_new_link(self.linx, 0)
+        result = self.wrapper.linx_cancel_new_link(self.linx,
+                                                   pointer(c_uint(ref)))
+        self.assertEqual(result, 0)
+
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
