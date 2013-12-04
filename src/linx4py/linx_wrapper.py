@@ -216,7 +216,8 @@ class LinxWrapper(object):
         LINX_OSBUFSIZE linx_sigsize(LINX * linx, union LINX_SIGNAL **sig);
         '''
         linx_sigsize = self.liblinx.linx_sigsize
-        linx_sigsize.argtypes = [POINTER(LINX), POINTER(POINTER(self.SignalClass))]
+        linx_sigsize.argtypes = [POINTER(LINX),
+                                 POINTER(POINTER(self.SignalClass))]
         return linx_sigsize(linx, sig)
 
     def linx_set_sigsize(self, linx, sig, sigsize):
@@ -321,7 +322,7 @@ class LinxWrapper(object):
         Get linx statistics for endpoint spid.
 
         Matches linx function:
-        int linx_get_stat(LINX *linx, LINX_SPID spid, struct linx_info_stat **stat); 
+        int linx_get_stat(LINX *linx, LINX_SPID spid, struct linx_info_stat **stat);
         '''
         linx_get_stat = self.liblinx.linx_get_stat
         linx_get_stat.argtypes = [POINTER(LINX), c_uint,
@@ -336,7 +337,7 @@ class LinxWrapper(object):
         int linx_free_stat(LINX * linx, struct linx_info_stat **stat);
         '''
         linx_free_stat = self.liblinx.linx_free_stat
-        linx_free_stat.argtypes =[POINTER(LINX),
+        linx_free_stat.argtypes = [POINTER(LINX),
                                   POINTER(POINTER(LINX_INFO_STAT))]
         return linx_free_stat(linx, stat)
 
@@ -348,20 +349,31 @@ class LinxWrapper(object):
         LINX_OSTMOREF linx_request_tmo(LINX * linx, LINX_OSTIME tmo, union LINX_SIGNAL **sig);
         '''
         linx_request_tmo = self.liblinx.linx_request_tmo
-        linx_request_tmo.argtypes =[POINTER(LINX), c_uint,
+        linx_request_tmo.argtypes = [POINTER(LINX), c_uint,
                                     POINTER(POINTER(self.SignalClass))]
         return linx_request_tmo(linx, tmo, sig)
 
     def linx_cancel_tmo(self, linx, tmoref):
         '''
         Cancel timeout request tmoref.
-        
+
         Matches linx function:
         int linx_cancel_tmo(LINX * linx, LINX_OSTMOREF * tmoref);
         '''
         linx_cancel_tmo = self.liblinx.linx_cancel_tmo
         linx_cancel_tmo.argtypes = [POINTER(LINX), POINTER(c_uint)]
         return linx_cancel_tmo(linx, tmoref)
+
+    def linx_modify_tmo(self, linx, tmoref, tmo):
+        '''
+        Modify timeout request tmoref.
+
+        Matches linx function:
+        int linx_modify_tmo(LINX *linx, LINX_OSTMOREF *tmoref, LINX_OSTIME tmo); 
+        '''
+        linx_modify_tmo = self.liblinx.linx_modify_tmo
+        linx_modify_tmo.argtypes = [POINTER(LINX), POINTER(c_uint), c_uint]
+        return linx_modify_tmo(linx, tmoref, tmo)
 
     def set_signal_class(self, signalClass):
         '''

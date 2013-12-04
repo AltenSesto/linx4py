@@ -183,6 +183,13 @@ class LinxWrapperTest(unittest.TestCase):
         self.wrapper.linx_receive_w_tmo(self.linx, sp, 100, LINX_NO_SIG_SEL)
         self.assertFalse(sp.contents, "Cancel should abort sending signal")
 
+    def test_linx_modify_tmo(self):
+        ref = self.wrapper.linx_request_tmo(self.linx, 10000, None)
+        self.wrapper.linx_modify_tmo(self.linx, pointer(c_uint(ref)), 10)
+        sp = pointer(pointer(LINX_SIGNAL()))
+        self.wrapper.linx_receive_w_tmo(self.linx, sp, 50, LINX_NO_SIG_SEL)
+        self.assertEquals(sp.contents.contents.sig_no, 249)
+
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
