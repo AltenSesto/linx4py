@@ -200,6 +200,12 @@ class LinxWrapperTest(unittest.TestCase):
                                                    pointer(c_uint(ref)))
         self.assertEqual(result, 0)
 
+    def test_linx_get_version(self):
+        datadummy = b'0'*16
+        buf = c_char_p(datadummy)
+        ver = self.wrapper.linx_get_version(buf)
+        self.assertNotEqual(ver, -1)
+
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

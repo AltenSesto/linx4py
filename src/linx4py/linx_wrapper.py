@@ -397,6 +397,17 @@ class LinxWrapper(object):
         linx_cancel_new_link.argtypes = [POINTER(LINX), POINTER(c_uint)]
         return linx_cancel_new_link(linx, nlref)
 
+    def linx_get_version(self, buf):
+        '''
+        Get linx version.
+
+        Matches linx function:
+        int linx_get_version(char *buf); 
+        '''
+        linx_get_version = self.liblinx.linx_get_version
+        linx_get_version.argtypes = [c_char_p]
+        return linx_get_version(buf)
+
     def set_signal_class(self, signalClass):
         '''
         Set signal class to signalClass.
