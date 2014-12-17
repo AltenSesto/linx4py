@@ -1,22 +1,22 @@
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 # Copyright (c) 2013 Alten AB.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the GNU Public License v3.0
 # which accompanies this distribution, and is available at
 # http://www.gnu.org/licenses/gpl.html
-# 
+#
 # Contributors:
 #     Bjorn Arnelid - initial API and implementation
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 '''
 Created on 23 okt 2013
 
 @author: Bjorn Arnelid
 
 OgreAdapter is used to work with the ogre workflow, using linx4py.
-There are still several things to do here. The better option is probably to use 
-linx4py instead of pyogre, at least for straight forward linx calls. 
- 
+There are still several things to do here. The better option is probably to use
+linx4py instead of pyogre, at least for straight forward linx calls.
+
 '''
 
 from linx4py import linx
@@ -56,9 +56,9 @@ class Linx(object):
     '''
     linx_instance = None
 
-    def __init__(self,name):
+    def __init__(self, name):
         '''
-        Create a LINX endpoint. 
+        Create a LINX endpoint.
 
         Parameters:
             name -- the LINX endpoint name
@@ -69,7 +69,7 @@ class Linx(object):
             gw.close()
         '''
         self.adapter = linx.LinxAdapter()
-    
+
     def __del__(self):
         """
         Delete the LINX connection.
@@ -81,14 +81,14 @@ class Linx(object):
         Terminate the LINX connection
         """
         self.adapter.close()
-    
+
     def pid(self):
         """
         Return the endpoint proxy pid.
         """
         return self.adapter.get_spid()
-    
-    def hunt(self, name, hunt_sig = None):
+
+    def hunt(self, name, hunt_sig=None):
         """
         Search for a process by name.
 
@@ -107,26 +107,26 @@ class Linx(object):
             pid = gw.receive().sender()
         """
         self.adapter.hunt(name, hunt_sig)
-    
-    def attach(self, pid, attach_sig = None):
+
+    def attach(self, pid, attach_sig=None):
         """
         Attach to a remote process to detect if the process is
         terminated. The attach_signal is stored within linx endpoint
         until the process is terminated. If no signal is specified, the
         linx endpoint allocates a default signal with signal number
         ATTACH_SIG.
-    
+
         Parameters:
             pid        -- the pid of the process to attach to
             attach_sig -- the signal to send if when pid dies (optional)
-    
+
         Usage:
             gw.hunt('ogre_echo')
             pid = gw.receive().sender()
             ref = gw.attach(pid)
         """
         return self.adapter.attach(attach_sig, pid)
-    
+
     def detach(self, ref):
         """
         Remove a signal previously attached by the caller.
@@ -140,8 +140,8 @@ class Linx(object):
             gw.detach(ref)
         """
         self.adapter.detach(ref)
-    
-    def send(self, sig, pid, sender = None):
+
+    def send(self, sig, pid, sender=None):
         """
         Send an OSE signal to_id the specified process.
 
@@ -157,7 +157,7 @@ class Linx(object):
             gw.send(mysig, targetpid)
         """
         self.adapter.send(sig, pid, sender)
-    
+
     def receive(self, sig_sel=None, timeout=None):
         """
         Receive a signal.
@@ -178,11 +178,10 @@ class Linx(object):
         """
         sig = BASIC_LINX_SIGNAL()
         sp = self.adapter.receive_pointer_w_tmo(sig, timeout, sig_sel)
-        # Fix this using signal collection 
-        #signal = signalAdapter.castToCorrect(sp)
+        # Fix this using signal collection
+        # signal = signalAdapter.castToCorrect(sp)
         return sp
-        
-        
+
     def init_async_receive(self, sig_sel=None):
         """
         Initiate a non blocking receive operation. The signal is later
@@ -205,7 +204,7 @@ class Linx(object):
         init_async_receive()
         """
         pass
-    
+
     def async_receive(self, sig_sel=None):
         """
         This methid is used for receiving signals in a non blocking
@@ -225,15 +224,14 @@ class Linx(object):
             gw.cancel_async_receive()
         """
         pass
-    
+
     def get_blocking_object(self):
         """
         Returns a file descriptor that can be used in a select() call to
         wait for any signal from the linx endpoint.
         """
         pass
-    
-    
-    
+
+
 class BASIC_LINX_SIGNAL(Structure):
     _fields_ = [("sig_no", c_uint), ]

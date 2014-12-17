@@ -1,13 +1,13 @@
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 # Copyright (c) 2013 Alten AB.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the GNU Public License v3.0
 # which accompanies this distribution, and is available at
 # http://www.gnu.org/licenses/gpl.html
-# 
+#
 # Contributors:
 #     Bjorn Arnelid - initial API and implementation
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 '''
 Handles Linx signals.
 '''
@@ -17,14 +17,15 @@ from ctypes import POINTER, cast
 from linx4py.linx_adapter import LinxError
 from linx4py.linx_constants import BaseSignal
 
+
 class SignalCollection(object):
     '''
-    Class used for keeping signaltypes in order to convert them during 
+    Class used for keeping signaltypes in order to convert them during
     send and receive
     '''
     def __init__(self):
-        self._signals = { }
-        self._sig_table = { }
+        self._signals = {}
+        self._sig_table = {}
         # Add Hunt signal
         self._signals[252] = BaseSignal
         self._sig_table[BaseSignal] = 252
@@ -42,7 +43,7 @@ class SignalCollection(object):
             casted = cast(pointer, POINTER(SignalClass))
             signal = casted.contents
             name = self._get_signal_reference_name(signal, sig_no)
-            if name == None:
+            if name is None:
                 return signal
             return getattr(signal, name)
         except KeyError:

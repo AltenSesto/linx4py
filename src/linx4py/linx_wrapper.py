@@ -1,13 +1,13 @@
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 # Copyright (c) 2013 Alten AB.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the GNU Public License v3.0
 # which accompanies this distribution, and is available at
 # http://www.gnu.org/licenses/gpl.html
-# 
+#
 # Contributors:
 #     Bjorn Arnelid - initial API and implementation
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 '''
 This module is a thin wrapper for calling Linx API
 
@@ -78,7 +78,8 @@ class LinxWrapper(object):
         Allocate bufferspace and return pointer to SignalClass object.
 
         Matches linx function:
-        union LINX_SIGNAL *linx_alloc(LINX * linx, LINX_OSBUFSIZE size, LINX_SIGSELECT sig_no);
+        union LINX_SIGNAL *linx_alloc(LINX * linx, LINX_OSBUFSIZE size,
+        LINX_SIGSELECT sig_no);
         '''
         linx_alloc = self.liblinx.linx_alloc
         linx_alloc.argtypes = [POINTER(LINX), c_int, c_uint]
@@ -115,7 +116,8 @@ class LinxWrapper(object):
         Send sig to to_id setting sender to from_id.
 
         Matches linx function:
-        int linx_send_w_s(LINX * linx, union LINX_SIGNAL **sig, LINX_SPID from, LINX_SPID to);
+        int linx_send_w_s(LINX * linx, union LINX_SIGNAL **sig, LINX_SPID from,
+        LINX_SPID to);
         '''
         linx_send_w_s = self.liblinx.linx_send_w_s
         linx_send_w_s.argtypes = [POINTER(LINX),
@@ -129,8 +131,8 @@ class LinxWrapper(object):
         Send sig to to_id with sender from_id specifying options to taglist.
 
         Matches linx function:
-        int linx_send_w_opt(LINX * linx, union LINX_SIGNAL **sig, LINX_SPID from,
-                            LINX_SPID to, int32_t *taglist);
+        int linx_send_w_opt(LINX * linx, union LINX_SIGNAL **sig, LINX_SPID
+        from, LINX_SPID to, int32_t *taglist);
         '''
         linx_send_w_opt = self.liblinx.linx_send_w_opt
         linx_send_w_opt.argtypes = [POINTER(LINX),
@@ -145,8 +147,8 @@ class LinxWrapper(object):
         set value to signal attribute attr for received signal sig.
 
         Matches linx function:
-        int linx_sigattr(const LINX *linx, const union LINX_SIGNAL **sig, uint32_t attr,
-                        void **value);
+        int linx_sigattr(const LINX *linx, const union LINX_SIGNAL **sig,
+        uint32_t attr, void **value);
         '''
         linx_sigattr = self.liblinx.linx_sigattr
         linx_sigattr.argtypes = [POINTER(LINX),
@@ -159,7 +161,8 @@ class LinxWrapper(object):
         Receive signal in sig_sel without timeout and set it to sig.
 
         Matches linx function:
-        int linx_receive(LINX * linx, union LINX_SIGNAL **sig, const LINX_SIGSELECT * sig_sel);
+        int linx_receive(LINX * linx, union LINX_SIGNAL **sig,
+                         const LINX_SIGSELECT * sig_sel);
         '''
         linx_receive = self.liblinx.linx_receive
         linx_receive.argtypes = [POINTER(LINX),
@@ -172,7 +175,8 @@ class LinxWrapper(object):
         Receive signal in sig_sel with timeout tmo and set it to sig.
 
         Matches linx function:
-        int linx_receive_w_tmo(LINX * linx, union LINX_SIGNAL **sig, LINX_OSTIME tmo, const LINX_SIGSELECT * sig_sel);
+        int linx_receive_w_tmo(LINX * linx, union LINX_SIGNAL **sig,
+        LINX_OSTIME tmo, const LINX_SIGSELECT * sig_sel);
         '''
         linx_receive_w_tmo = self.liblinx.linx_receive_w_tmo
         linx_receive_w_tmo.argtypes = [POINTER(LINX),
@@ -186,7 +190,8 @@ class LinxWrapper(object):
         Receive signal from from_id and set it to sig.
 
         Matches linx function:
-        int linx_receive_from(LINX * linx, union LINX_SIGNAL **sig, LINX_OSTIME tmo, const LINX_SIGSELECT * sig_sel, LINX_SPID from);
+        int linx_receive_from(LINX * linx, union LINX_SIGNAL **sig,
+        LINX_OSTIME tmo, const LINX_SIGSELECT * sig_sel, LINX_SPID from);
         '''
         linx_receive_from = self.liblinx.linx_receive_from
         linx_receive_from.argtypes = [POINTER(LINX),
@@ -225,7 +230,8 @@ class LinxWrapper(object):
         Set signal buffer size for sig.
 
         Matches linx function:
-        int linx_set_sigsize(LINX * linx, union LINX_SIGNAL **sig, LINX_OSBUFSIZE sigsize);
+        int linx_set_sigsize(LINX * linx, union LINX_SIGNAL **sig,
+                             LINX_OSBUFSIZE sigsize);
         '''
         linx_set_sigsize = self.liblinx.linx_set_sigsize
         linx_set_sigsize.argtypes = [POINTER(LINX),
@@ -238,7 +244,8 @@ class LinxWrapper(object):
         Send hunt signal using hunt_sig to server identified by name.
 
         Matches linx function:
-        int linx_hunt(LINX * linx, const char *name, union LINX_SIGNAL **hunt_sig);
+        int linx_hunt(LINX * linx, const char *name,
+                      union LINX_SIGNAL **hunt_sig);
         '''
         linx_hunt = self.liblinx.linx_hunt
         linx_hunt.argtypes = [POINTER(LINX),
@@ -251,7 +258,8 @@ class LinxWrapper(object):
         Send hunt signal with return id from.
 
         Matches linx function:
-        int linx_hunt_from(LINX * linx, const char *name, union LINX_SIGNAL **hunt_sig, LINX_SPID from);
+        int linx_hunt_from(LINX * linx, const char *name,
+                           union LINX_SIGNAL **hunt_sig, LINX_SPID from);
         '''
         linx_hunt_from = self.liblinx.linx_hunt_from
         linx_hunt_from.argtypes = [POINTER(LINX),
@@ -265,7 +273,8 @@ class LinxWrapper(object):
         Attach to server spid and return reference.
 
         Matches linx function:
-        LINX_OSATTREF linx_attach(LINX * linx, union LINX_SIGNAL **sig, LINX_SPID spid);
+        LINX_OSATTREF linx_attach(LINX * linx,
+                                  union LINX_SIGNAL **sig, LINX_SPID spid);
         '''
         linx_attach = self.liblinx.linx_attach
         linx_attach.argtypes = [POINTER(LINX),
@@ -322,7 +331,8 @@ class LinxWrapper(object):
         Get linx statistics for endpoint spid.
 
         Matches linx function:
-        int linx_get_stat(LINX *linx, LINX_SPID spid, struct linx_info_stat **stat);
+        int linx_get_stat(LINX *linx, LINX_SPID spid,
+                          struct linx_info_stat **stat);
         '''
         linx_get_stat = self.liblinx.linx_get_stat
         linx_get_stat.argtypes = [POINTER(LINX), c_uint,
@@ -338,7 +348,7 @@ class LinxWrapper(object):
         '''
         linx_free_stat = self.liblinx.linx_free_stat
         linx_free_stat.argtypes = [POINTER(LINX),
-                                  POINTER(POINTER(LINX_INFO_STAT))]
+                                   POINTER(POINTER(LINX_INFO_STAT))]
         return linx_free_stat(linx, stat)
 
     def linx_request_tmo(self, linx, tmo, sig):
@@ -346,11 +356,12 @@ class LinxWrapper(object):
         Send signal after tmo milliseconds.
 
         Matches linx function:
-        LINX_OSTMOREF linx_request_tmo(LINX * linx, LINX_OSTIME tmo, union LINX_SIGNAL **sig);
+        LINX_OSTMOREF linx_request_tmo(LINX * linx, LINX_OSTIME tmo,
+                                       union LINX_SIGNAL **sig);
         '''
         linx_request_tmo = self.liblinx.linx_request_tmo
         linx_request_tmo.argtypes = [POINTER(LINX), c_uint,
-                                    POINTER(POINTER(self.SignalClass))]
+                                     POINTER(POINTER(self.SignalClass))]
         return linx_request_tmo(linx, tmo, sig)
 
     def linx_cancel_tmo(self, linx, tmoref):
@@ -369,7 +380,7 @@ class LinxWrapper(object):
         Modify timeout request tmoref.
 
         Matches linx function:
-        int linx_modify_tmo(LINX *linx, LINX_OSTMOREF *tmoref, LINX_OSTIME tmo); 
+        int linx_modify_tmo(LINX *linx, LINX_OSTMOREF *tmoref, LINX_OSTIME tmo);
         '''
         linx_modify_tmo = self.liblinx.linx_modify_tmo
         linx_modify_tmo.argtypes = [POINTER(LINX), POINTER(c_uint), c_uint]
@@ -402,7 +413,7 @@ class LinxWrapper(object):
         Get linx version.
 
         Matches linx function:
-        int linx_get_version(char *buf); 
+        int linx_get_version(char *buf);
         '''
         linx_get_version = self.liblinx.linx_get_version
         linx_get_version.argtypes = [c_char_p]
@@ -458,6 +469,7 @@ LINXSigAdm._fields_ = [("link", LINK),
                        ("owner", POINTER(LINX)),
                        ("true_size", c_int),
                        ("sndrcv", linx_sndrcv_param)]
+
 
 class LINX_INFO_STAT(Structure):
     '''
