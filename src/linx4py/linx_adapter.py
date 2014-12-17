@@ -1,4 +1,4 @@
-# -------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 # Copyright (c) 2013 Alten AB.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the GNU Public License v3.0
@@ -7,7 +7,7 @@
 #
 # Contributors:
 #     Bjorn Arnelid - initial API and implementation
-# -------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 '''
 Send and receive messages with other nodes usning linx.
 '''

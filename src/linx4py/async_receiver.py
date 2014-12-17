@@ -1,4 +1,4 @@
-# ------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 # Copyright (c) 2013 Alten AB.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the GNU Public License v3.0
@@ -7,7 +7,7 @@
 #
 # Contributors:
 #     Bjorn Arnelid - initial API and implementation
-# ------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 '''
 Module for asynchronous receiving of linx signals.
 '''
@@ -57,19 +57,20 @@ class AsyncReceiver(Thread):
         self.initializing = False
         while(not self.should_quit):
             sig = BaseSignal()
-            sp = self.adapter.receive_pointer_w_tmo(sig, self.receive_timeout,
-                                                    self.sigsel)
-            self._signals.append(sp)
+            signal_pointer = self.adapter.receive_pointer_w_tmo(sig,
+                                                                self.receive_timeout,
+                                                                self.sigsel)
+            self._signals.append(signal_pointer)
         self.adapter.close()
         print("Receiver: Stopping, good bye!")
 
-    def add_union_type(self, SignalClass):
+    def add_union_type(self, signalClass):
         '''
         addSignalType
         Add a signal class to signal_collection, signal can then be collected
         dynamically by looking at the signalID
         '''
-        self.signal_collection.add_union(SignalClass)
+        self.signal_collection.add_union(signalClass)
 
     def receive(self):
         '''
@@ -79,8 +80,8 @@ class AsyncReceiver(Thread):
             time.sleep(0.001)
         if(not self._signals):
             return None
-        sp = self._signals.pop(0)
-        return self.signal_collection.cast_to_correct(sp)
+        signalPointer = self._signals.pop(0)
+        return self.signal_collection.cast_to_correct(signalPointer)
 
     def stopReceive(self):
         '''
