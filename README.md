@@ -1,6 +1,6 @@
 #linx4py
 
-Linx4Py is a python wrapper for Linx, a distributed communication protocol. 
+Linx4Py is a python wrapper for Linx, a distributed communication protocol.
 
 ##Requirements
 
@@ -10,9 +10,9 @@ Linx4Py is a python wrapper for Linx, a distributed communication protocol.
 
 ##Installation
 
-Get and install Linx as described in the Linx project readme. Make sure that the kernel module linx.ko is loaded in your system.
+Get and install Linx as described in the Linx project [readme](http://linx.sourceforge.net/linxdoc/bmark/linx_bmark/README). A detailed install guide for linx can also be found at our project wiki. Make sure that the kernel module linx.ko is loaded in your system.
 
-Add linx4py to your pythonpath like this: 
+Add linx4py to your pythonpath like this:
 ```shell
 export PYTHONPATH="${PYTHONPATH}"
 ```
@@ -51,7 +51,7 @@ Finally to recieve a signal
 receiveSignal = linxInstance.receive(1000)
 ```
 ###linx_adapter.py
-linx_adapter.py provides a slightly more detailed way to use the linx api. It provides a compromise between low level control and ease of use. 
+linx_adapter.py provides a slightly more detailed way to use the linx api. It provides a compromise between low level control and ease of use.
 
 To create a linx node
 ```python
@@ -79,7 +79,7 @@ signal = linxInstance.receive_w_tmo(LINX_SIGNAL(),10000,LINX_NO_SIG_SEL)
 ###linx_wrapper.py
 linx_wrapper.py is a 1 to 1 mapping to the linx API, it covers the entire api and strives to follow the design of the api as closely as possible.
 
-To create a linx node 
+To create a linx node
 ```python
 wrapper = LinxWrapper()
 name = "example_client"
