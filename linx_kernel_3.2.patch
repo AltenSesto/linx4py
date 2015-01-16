@@ -1,0 +1,63 @@
+diff -rupN /home/seul/Desktop/linx-2.5.1/net/linx/af_linx.c linx-2.5.1/net/linx/af_linx.c
+--- /home/seul/Desktop/linx-2.5.1/net/linx/af_linx.c	2011-07-05 11:07:35.000000000 +0200
++++ linx-2.5.1/net/linx/af_linx.c	2013-02-15 10:36:50.778763779 +0100
+@@ -996,7 +996,7 @@ static struct sk_buff *linx_alloc_send_p
+ 					}
+ 
+ 					frag = &skb_shinfo(skb)->frags[i];
+-					frag->page = page;
++					frag->page.p = page;
+ 					frag->page_offset = 0;
+ 					frag->size = (data_len >= PAGE_SIZE ?
+ 						      PAGE_SIZE : data_len);
+@@ -1072,7 +1072,7 @@ static int linx_skb_store_bits(struct sk
+ 			if (copy > len)
+ 				copy = len;
+ 
+-			vaddr = kmap(frag->page);
++			vaddr = kmap(frag->page.p);
+ 			if (BUF_TYPE_USER(buffer_type)) {
+ 				err = copy_from_user(vaddr + frag->page_offset +
+ 						     offset - start, from,
+@@ -1084,7 +1084,7 @@ static int linx_skb_store_bits(struct sk
+ 				memcpy(vaddr + frag->page_offset +
+ 				       offset - start, from, copy);
+ 			}
+-			kunmap(frag->page);
++			kunmap(frag->page.p);
+ 
+ 			if ((len -= copy) == 0)
+ 				return 0;
+diff -rupN /home/seul/Desktop/linx-2.5.1/net/linx/ecm/ecm.h linx-2.5.1/net/linx/ecm/ecm.h
+--- /home/seul/Desktop/linx-2.5.1/net/linx/ecm/ecm.h	2011-06-28 13:41:01.000000000 +0200
++++ linx-2.5.1/net/linx/ecm/ecm.h	2013-02-15 10:45:26.786774436 +0100
+@@ -36,6 +36,7 @@
+ #include <linux/linx_types.h>
+ #include <linux/netdevice.h>
+ #include <linux/skbuff.h>
++#include <linux/interrupt.h>
+ 
+ #include <ecm_lock.h>
+ 
+diff -rupN /home/seul/Desktop/linx-2.5.1/net/linx/include/linx_compat.h linx-2.5.1/net/linx/include/linx_compat.h
+--- /home/seul/Desktop/linx-2.5.1/net/linx/include/linx_compat.h	2011-05-20 10:45:00.000000000 +0200
++++ linx-2.5.1/net/linx/include/linx_compat.h	2013-02-14 12:33:54.130169140 +0100
+@@ -34,6 +34,7 @@
+ #ifndef __LINX_COMPAT_H__
+ #define __LINX_COMPAT_H__
+ 
++#include <linux/export.h>
+ #include <linux/version.h>
+ #include <net/sock.h>
+ 
+diff -rupN /home/seul/Desktop/linx-2.5.1/net/linx/riocm/rio.h linx-2.5.1/net/linx/riocm/rio.h
+--- /home/seul/Desktop/linx-2.5.1/net/linx/riocm/rio.h	2011-05-20 10:45:04.000000000 +0200
++++ linx-2.5.1/net/linx/riocm/rio.h	2013-02-15 10:45:23.218774362 +0100
+@@ -36,6 +36,7 @@
+ #include <linux/netdevice.h>
+ #include <linux/skbuff.h>
+ #include <linux/linx_ioctl.h>
++#include <linux/interrupt.h>
+ 
+ #include <rio_lock.h>
+ 
