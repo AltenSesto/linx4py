@@ -1,3 +1,5 @@
+rm unittest/*.xml
+
 export PYTHONPATH="${PYTHONPATH}:./src"
 python3 src/test/linx_wrapper_test.py
 python3 src/test/linx_adapter_test.py
