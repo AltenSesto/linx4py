@@ -34,8 +34,27 @@
           <h3>
 <a id="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages" aria-hidden="true"><span class="octicon octicon-link"></span></a></h3>
 
-<h3>
-<a id="designer-templates" class="anchor" href="#designer-templates" aria-hidden="true"><span class="octicon octicon-link"></span></a>Requirements</h3>
+<h3><a id="designer-templates" class="anchor" href="#designer-templates" aria-hidden="true"><span class="octicon octicon-link"></span></a>Core Features</h3>
+
+<ul>
+   <li>Fast prototyping of system modules</li>
+   <li>Simple blackbox testing of embedded systems through a common communication interface</li>
+   <li>Simple integration between low level application code and high level Python code</li>
+</ul>
+
+<h3><a id="designer-templates" class="anchor" href="#designer-templates" aria-hidden="true"><span class="octicon octicon-link"></span></a>Why Use LINX for Python?</h3>
+
+<p>LINX is a distributed communication protocol for embedded systems that supports many different types of communication medium. This includes common types like sockets, CAN and ethernet. When developing distributed applications, early testing of the system components can be difficult if some modules in the system are missing. This can be solved by being able to quickly develop component prototypes written in a high level language. This is where Linx4Py comes into the picture. Using a high level language will in addition to rapid prototyping of modules allow testers to write high level system tests that is able to communicate with low level embedded applications. Since LINX supports communication medium such as ethernet, the application can be tested on the target hardware with the test suite running on different hardware, thus not affecting the performance of the target platform.</p>
+
+
+<h3><a id="designer-templates" class="anchor" href="#designer-templates" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview</h3>
+
+<p>Linx4Py provides a full wrapper for the LINX communication protocol. The wrapper however has a three layered design, where all layers are fully featured ways to contact LINX. The differences between the layers however is the level of abstraction provided through the layers. The topmost level defined in i{linx.py} should be sufficient for most types of programs, but documentation for using the lower layers is provided through the README for users that want more fine grained control. The only limiting factor of how Linx4Py can be used is that since LINX is a communication library targeted at C, all data that is passed through LINX must be c-type integers, strings etc. </p>
+
+<img src="images/overview.png" class="" style="width:300px; margin-left: 22%;" alt="LINX architecture overview">
+
+
+<h3><a id="designer-templates" class="anchor" href="#designer-templates" aria-hidden="true"><span class="octicon octicon-link"></span></a>Requirements</h3>
 
 <ul>
    <li>Linx 2.5.1 (Can be found at <a href="http://sourceforge.net/projects/linx/">http://sourceforge.net/projects/linx/</a></li>
